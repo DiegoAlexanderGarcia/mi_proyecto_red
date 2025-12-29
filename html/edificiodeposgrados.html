@@ -1,16 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oficinas Edificio De Prosgrados</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-     <link rel="stylesheet" href="../css/edificideposgrados.css">
+    <link rel="stylesheet" href="../css/edificideposgrados.css">
 </head>
+
 <body>
     <h1>EDIFICIO DE POSGRADOS</h1>
-    
+
     <div class="mapa">
 
         <a href="../index.html" class="puerta-plano puerta-1">
@@ -21,670 +22,790 @@
         <h1 id="titulo-2"> SALIDA</h1>
 
 
-        <div class="punto-container" id="punto-switch-01" 
-             style="top:150px; left:60px;"> 
-            
-          
+        <div class="punto-container" id="punto-switch-01" style="top:150px; left:60px;">
+
+
             <div class="switch-red" data-info="Switch de Red">
-                 <div class="puerto"></div>
-                 <div class="puerto"></div>
-                 <div class="puerto"></div>
-                 <div class="puerto"></div>
+                <div class="puerto"></div>
+                <div class="puerto"></div>
+                <div class="puerto"></div>
+                <div class="puerto"></div>
             </div>
         </div>
-        
-       <div id="modal-ver-punto" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="titulo-ver-punto">Información del Switch</h2>
-            <span class="close-btn" id="cerrar-ver">&times;</span>
-        </div>
-        <div class="modal-body">
-            <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
-            <div class="info-item">
-                <i class="fa-solid fa-tag info-icon"></i>
-                <span class="info-label">Nombre:</span>
-                <span class="info-value" id="ver-switch-nombre"></span>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-location-dot info-icon"></i>
-                <span class="info-label">Ubicación:</span>
-                <span class="info-value" id="ver-switch-ubicacion"></span>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-barcode info-icon"></i>
-                <span class="info-label">No. de Serie:</span>
-                <span class="info-value" id="ver-switch-serie"></span>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-wifi info-icon"></i>
-                <span class="info-label">MAC:</span>
-                <span class="info-value" id="ver-switch-mac"></span>
-            </div>
-            
-            <hr style="margin: 15px 0;">
-            
-            <h3 style="margin-bottom: 10px; color: #28a745;">PUERTOS DEL SWITCH</h3>
-            <div id="tabla-puertos-ver" style="max-height: 250px; overflow-y: auto;">
+
+        <div id="modal-ver-punto" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="titulo-ver-punto">Información del Switch</h2>
+                    <span class="close-btn" id="cerrar-ver">&times;</span>
                 </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn" id="cerrar-ver-btn">CERRAR</button>
-            <button class="btn" id="btn-editar-info">EDITAR</button>
-        </div>
-    </div>
-</div>
-
-
-<div id="modal-editar-punto" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="titulo-punto">EDITAR SWITCH DE RED</h2>
-            <span class="close-btn" id="cerrar-punto">&times;</span>
-        </div>
-        <div class="modal-body">
-            <form id="form-switch">
-                <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
-                <label for="switch-nombre">NOMBRE </label>
-                <input type="text" id="switch-nombre" placeholder="Ej: SW-PISO3-ARM-01">
-
-                <label for="switch-ubicacion">UBICACIÓN</label>
-                <input type="text" id="switch-ubicacion" placeholder="Ej: Piso 3, Armario 2">
-
-                <label for="switch-serie">NÚMERO DE SERIE</label>
-                <input type="text" id="switch-serie" placeholder="Ej: XYZ-123456789">
-
-                <label for="switch-mac">DIRECCIÓN MAC</label>
-                <input type="text" id="switch-mac" placeholder="Ej: 00:1A:2B:3C:4D:5E">
-                
-                <hr style="margin: 15px 0;">
-
-                <h3 style="margin-bottom: 5px; color: #28a745;">CONFIGURACIÓN DE PUERTOS</h3>
-                
-                <div id="puertos-container">
-                    
-                    <div class="puerto-config" data-puerto="1">
-                        <h4 class="puerto-titulo">PUERTO 1</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-1">NOMBRE</label>
-                                <input type="text" id="nombre-punto-1" class="puerto-nombre-input" placeholder="Ej: Estación de Trabajo">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-1">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-1" class="puerto-localizacion-input" placeholder="Ej: Piso 2 / Oficina 301">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="1" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-1">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-1" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
+                <div class="modal-body">
+                    <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
+                    <div class="info-item">
+                        <i class="fa-solid fa-tag info-icon"></i>
+                        <span class="info-label">Nombre:</span>
+                        <span class="info-value" id="ver-switch-nombre"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-location-dot info-icon"></i>
+                        <span class="info-label">Ubicación:</span>
+                        <span class="info-value" id="ver-switch-ubicacion"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-barcode info-icon"></i>
+                        <span class="info-label">No. de Serie:</span>
+                        <span class="info-value" id="ver-switch-serie"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-wifi info-icon"></i>
+                        <span class="info-label">MAC:</span>
+                        <span class="info-value" id="ver-switch-mac"></span>
                     </div>
 
-                    <div class="puerto-config" data-puerto="2">
-                        <h4 class="puerto-titulo">PUERTO 2</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-2">NOMBRE</label>
-                                <input type="text" id="nombre-punto-2" class="puerto-nombre-input" placeholder="Ej: Impresora 02">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-2">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-2" class="puerto-localizacion-input" placeholder="Ej: Sala Común">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="2" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-2">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-2" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="puerto-config" data-puerto="3">
-                        <h4 class="puerto-titulo">PUERTO 3</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-3">NOMBRE</label>
-                                <input type="text" id="nombre-punto-3" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-3">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-3" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="3" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-3">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-3" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
+                    <hr style="margin: 15px 0;">
 
-                    <div class="puerto-config" data-puerto="4">
-                        <h4 class="puerto-titulo">PUERTO 4</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-4">NOMBRE</label>
-                                <input type="text" id="nombre-punto-4" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-4">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-4" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="4" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-4">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-4" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
+                    <h3 style="margin-bottom: 10px; color: #28a745;">PUERTOS DEL SWITCH</h3>
+                    <div id="tabla-puertos-ver" style="max-height: 250px; overflow-y: auto;">
                     </div>
-
-                    <div class="puerto-config" data-puerto="5">
-                        <h4 class="puerto-titulo">PUERTO 5</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-5">NOMBRE</label>
-                                <input type="text" id="nombre-punto-5" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-5">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-5" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="5" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-5">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-5" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="6">
-                        <h4 class="puerto-titulo">PUERTO 6</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-6">NOMBRE</label>
-                                <input type="text" id="nombre-punto-6" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-6">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-6" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="6" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-6">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-6" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="7">
-                        <h4 class="puerto-titulo">PUERTO 7</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-7">NOMBRE</label>
-                                <input type="text" id="nombre-punto-7" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-7">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-7" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="7" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-7">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-7" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="8">
-                        <h4 class="puerto-titulo">PUERTO 8</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-8">NOMBRE</label>
-                                <input type="text" id="nombre-punto-8" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-8">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-8" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="8" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-8">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-8" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="9">
-                        <h4 class="puerto-titulo">PUERTO 9</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-9">NOMBRE</label>
-                                <input type="text" id="nombre-punto-9" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-9">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-9" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="9" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-9">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-9" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="10">
-                        <h4 class="puerto-titulo">PUERTO 10</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-10">NOMBRE</label>
-                                <input type="text" id="nombre-punto-10" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-10">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-10" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="10" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-10">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-10" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="11">
-                        <h4 class="puerto-titulo">PUERTO 11</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-11">NOMBRE</label>
-                                <input type="text" id="nombre-punto-11" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-11">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-11" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="11" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-11">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-11" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="12">
-                        <h4 class="puerto-titulo">PUERTO 12</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-12">NOMBRE</label>
-                                <input type="text" id="nombre-punto-12" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-12">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-12" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="12" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-12">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-12" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="13">
-                        <h4 class="puerto-titulo">PUERTO 13</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-13">NOMBRE</label>
-                                <input type="text" id="nombre-punto-13" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-13">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-13" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="13" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-13">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-13" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="14">
-                        <h4 class="puerto-titulo">PUERTO 14</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-14">NOMBRE</label>
-                                <input type="text" id="nombre-punto-14" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-14">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-14" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="14" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-14">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-14" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="15">
-                        <h4 class="puerto-titulo">PUERTO 15</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-15">NOMBRE</label>
-                                <input type="text" id="nombre-punto-15" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-15">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-15" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="15" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-15">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-15" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="16">
-                        <h4 class="puerto-titulo">PUERTO 16</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-16">NOMBRE</label>
-                                <input type="text" id="nombre-punto-16" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-16">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-16" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="16" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-16">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-16" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="17">
-                        <h4 class="puerto-titulo">PUERTO 17</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-17">NOMBRE</label>
-                                <input type="text" id="nombre-punto-17" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-17">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-17" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="17" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-17">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-17" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="18">
-                        <h4 class="puerto-titulo">PUERTO 18</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-18">NOMBRE</label>
-                                <input type="text" id="nombre-punto-18" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-18">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-18" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="18" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-18">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-18" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="19">
-                        <h4 class="puerto-titulo">PUERTO 19</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-19">NOMBRE</label>
-                                <input type="text" id="nombre-punto-19" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-19">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-19" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="19" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-19">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-19" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="20">
-                        <h4 class="puerto-titulo">PUERTO 20</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-20">NOMBRE</label>
-                                <input type="text" id="nombre-punto-20" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-20">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-20" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="20" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-20">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-20" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="21">
-                        <h4 class="puerto-titulo">PUERTO 21</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-21">NOMBRE</label>
-                                <input type="text" id="nombre-punto-21" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-21">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-21" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="21" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-21">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-21" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="22">
-                        <h4 class="puerto-titulo">PUERTO 22</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-22">NOMBRE</label>
-                                <input type="text" id="nombre-punto-22" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-22">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-22" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="22" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-22">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-22" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="23">
-                        <h4 class="puerto-titulo">PUERTO 23</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-23">NOMBRE</label>
-                                <input type="text" id="nombre-punto-23" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-23">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-23" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="23" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-23">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-23" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="24">
-                        <h4 class="puerto-titulo">PUERTO 24</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-24">NOMBRE</label>
-                                <input type="text" id="nombre-punto-24" class="puerto-nombre-input" placeholder="Ej: Servidor DC">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-24">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-24" class="puerto-localizacion-input" placeholder="Ej: Rack 1 / U-40">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="24" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-24">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-24" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="25">
-                        <h4 class="puerto-titulo">PUERTO 25</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-25">NOMBRE</label>
-                                <input type="text" id="nombre-punto-25" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-25">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-25" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="25" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-25">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-25" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="26">
-                        <h4 class="puerto-titulo">PUERTO 26</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-26">NOMBRE</label>
-                                <input type="text" id="nombre-punto-26" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-26">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-26" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="26" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-26">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-26" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="27">
-                        <h4 class="puerto-titulo">PUERTO 27</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-27">NOMBRE</label>
-                                <input type="text" id="nombre-punto-27" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-27">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-27" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="27" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-27">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-27" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="28">
-                        <h4 class="puerto-titulo">PUERTO 28</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-28">NOMBRE</label>
-                                <input type="text" id="nombre-punto-28" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-28">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-28" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="28" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-28">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-28" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="29">
-                        <h4 class="puerto-titulo">PUERTO 29</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-29">NOMBRE</label>
-                                <input type="text" id="nombre-punto-29" class="puerto-nombre-input" placeholder="Ej: Nombre de persona">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-29">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-29" class="puerto-localizacion-input" placeholder="Ej: Piso X / Ubicación Y">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="29" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-29">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-29" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="puerto-config" data-puerto="30">
-                        <h4 class="puerto-titulo">PUERTO 30</h4>
-                        <div class="puerto-campos-fila">
-                            <div class="campo-grupo">
-                                <label for="nombre-punto-30">NOMBRE</label>
-                                <input type="text" id="nombre-punto-30" class="puerto-nombre-input" placeholder="Ej: Servidor de Correo">
-                            </div>
-                            <div class="campo-grupo">
-                                <label for="localizacion-punto-30">LOCALIZACIÓN</label>
-                                <input type="text" id="localizacion-punto-30" class="puerto-localizacion-input" placeholder="Ej: Sala de Servidores">
-                            </div>
-                            <button class="btn btn-accion-puerto" data-puerto="30" type="button">Ver Detalle</button>
-                        </div>
-                        <div class="campo-observaciones">
-                            <label for="observaciones-punto-30">OBSERVACIONES</label>
-                            <textarea id="observaciones-punto-30" class="puerto-obs-textarea" rows="1" placeholder="Escriba observaciones..."></textarea>
-                        </div>
-                    </div>
-
                 </div>
-                </form>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-eliminar" id="eliminar-punto">ELIMINAR SWITCH</button>
-            <div>
-                <button class="btn" id="cerrar-punto-btn">CERRAR</button>
-                <button class="btn" id="guardar-punto">GUARDAR</button>
+                <div class="modal-footer">
+                    <button class="btn" id="cerrar-ver-btn">CERRAR</button>
+                    <button class="btn" id="btn-editar-info">EDITAR</button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<script src="../js/edificiodeposgrados.js"></script>
+
+
+        <div id="modal-editar-punto" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="titulo-punto">EDITAR SWITCH DE RED</h2>
+                    <span class="close-btn" id="cerrar-punto">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="form-switch">
+                        <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
+                        <label for="switch-nombre">NOMBRE </label>
+                        <input type="text" id="switch-nombre" placeholder="Ej: SW-PISO3-ARM-01">
+
+                        <label for="switch-ubicacion">UBICACIÓN</label>
+                        <input type="text" id="switch-ubicacion" placeholder="Ej: Piso 3, Armario 2">
+
+                        <label for="switch-serie">NÚMERO DE SERIE</label>
+                        <input type="text" id="switch-serie" placeholder="Ej: XYZ-123456789">
+
+                        <label for="switch-mac">DIRECCIÓN MAC</label>
+                        <input type="text" id="switch-mac" placeholder="Ej: 00:1A:2B:3C:4D:5E">
+
+                        <hr style="margin: 15px 0;">
+
+                        <h3 style="margin-bottom: 5px; color: #28a745;">CONFIGURACIÓN DE PUERTOS</h3>
+
+                        <div id="puertos-container">
+
+                            <div class="puerto-config" data-puerto="1">
+                                <h4 class="puerto-titulo">PUERTO 1</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-1">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-1" class="puerto-nombre-input"
+                                            placeholder="Ej: Estación de Trabajo">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-1">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-1" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso 2 / Oficina 301">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="1" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-1">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-1" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="2">
+                                <h4 class="puerto-titulo">PUERTO 2</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-2">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-2" class="puerto-nombre-input"
+                                            placeholder="Ej: Impresora 02">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-2">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-2" class="puerto-localizacion-input"
+                                            placeholder="Ej: Sala Común">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="2" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-2">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-2" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="3">
+                                <h4 class="puerto-titulo">PUERTO 3</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-3">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-3" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-3">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-3" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="3" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-3">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-3" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="4">
+                                <h4 class="puerto-titulo">PUERTO 4</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-4">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-4" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-4">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-4" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="4" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-4">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-4" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="5">
+                                <h4 class="puerto-titulo">PUERTO 5</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-5">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-5" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-5">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-5" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="5" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-5">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-5" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="6">
+                                <h4 class="puerto-titulo">PUERTO 6</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-6">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-6" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-6">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-6" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="6" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-6">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-6" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="7">
+                                <h4 class="puerto-titulo">PUERTO 7</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-7">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-7" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-7">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-7" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="7" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-7">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-7" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="8">
+                                <h4 class="puerto-titulo">PUERTO 8</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-8">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-8" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-8">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-8" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="8" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-8">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-8" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="9">
+                                <h4 class="puerto-titulo">PUERTO 9</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-9">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-9" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-9">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-9" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="9" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-9">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-9" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="10">
+                                <h4 class="puerto-titulo">PUERTO 10</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-10">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-10" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-10">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-10" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="10" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-10">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-10" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="11">
+                                <h4 class="puerto-titulo">PUERTO 11</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-11">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-11" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-11">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-11" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="11" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-11">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-11" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="12">
+                                <h4 class="puerto-titulo">PUERTO 12</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-12">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-12" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-12">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-12" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="12" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-12">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-12" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="13">
+                                <h4 class="puerto-titulo">PUERTO 13</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-13">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-13" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-13">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-13" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="13" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-13">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-13" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="14">
+                                <h4 class="puerto-titulo">PUERTO 14</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-14">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-14" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-14">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-14" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="14" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-14">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-14" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="15">
+                                <h4 class="puerto-titulo">PUERTO 15</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-15">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-15" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-15">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-15" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="15" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-15">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-15" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="16">
+                                <h4 class="puerto-titulo">PUERTO 16</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-16">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-16" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-16">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-16" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="16" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-16">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-16" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="17">
+                                <h4 class="puerto-titulo">PUERTO 17</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-17">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-17" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-17">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-17" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="17" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-17">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-17" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="18">
+                                <h4 class="puerto-titulo">PUERTO 18</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-18">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-18" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-18">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-18" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="18" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-18">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-18" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="19">
+                                <h4 class="puerto-titulo">PUERTO 19</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-19">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-19" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-19">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-19" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="19" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-19">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-19" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="20">
+                                <h4 class="puerto-titulo">PUERTO 20</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-20">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-20" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-20">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-20" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="20" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-20">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-20" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="21">
+                                <h4 class="puerto-titulo">PUERTO 21</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-21">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-21" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-21">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-21" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="21" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-21">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-21" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="22">
+                                <h4 class="puerto-titulo">PUERTO 22</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-22">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-22" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-22">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-22" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="22" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-22">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-22" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="23">
+                                <h4 class="puerto-titulo">PUERTO 23</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-23">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-23" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-23">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-23" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="23" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-23">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-23" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="24">
+                                <h4 class="puerto-titulo">PUERTO 24</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-24">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-24" class="puerto-nombre-input"
+                                            placeholder="Ej: Servidor DC">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-24">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-24" class="puerto-localizacion-input"
+                                            placeholder="Ej: Rack 1 / U-40">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="24" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-24">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-24" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="25">
+                                <h4 class="puerto-titulo">PUERTO 25</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-25">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-25" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-25">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-25" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="25" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-25">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-25" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="26">
+                                <h4 class="puerto-titulo">PUERTO 26</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-26">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-26" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-26">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-26" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="26" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-26">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-26" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="27">
+                                <h4 class="puerto-titulo">PUERTO 27</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-27">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-27" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-27">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-27" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="27" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-27">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-27" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="28">
+                                <h4 class="puerto-titulo">PUERTO 28</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-28">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-28" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-28">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-28" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="28" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-28">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-28" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="29">
+                                <h4 class="puerto-titulo">PUERTO 29</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-29">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-29" class="puerto-nombre-input"
+                                            placeholder="Ej: Nombre de persona">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-29">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-29" class="puerto-localizacion-input"
+                                            placeholder="Ej: Piso X / Ubicación Y">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="29" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-29">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-29" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="puerto-config" data-puerto="30">
+                                <h4 class="puerto-titulo">PUERTO 30</h4>
+                                <div class="puerto-campos-fila">
+                                    <div class="campo-grupo">
+                                        <label for="nombre-punto-30">NOMBRE</label>
+                                        <input type="text" id="nombre-punto-30" class="puerto-nombre-input"
+                                            placeholder="Ej: Servidor de Correo">
+                                    </div>
+                                    <div class="campo-grupo">
+                                        <label for="localizacion-punto-30">LOCALIZACIÓN</label>
+                                        <input type="text" id="localizacion-punto-30" class="puerto-localizacion-input"
+                                            placeholder="Ej: Sala de Servidores">
+                                    </div>
+                                    <button class="btn btn-accion-puerto" data-puerto="30" type="button">Ver
+                                        Detalle</button>
+                                </div>
+                                <div class="campo-observaciones">
+                                    <label for="observaciones-punto-30">OBSERVACIONES</label>
+                                    <textarea id="observaciones-punto-30" class="puerto-obs-textarea" rows="1"
+                                        placeholder="Escriba observaciones..."></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-eliminar" id="eliminar-punto">ELIMINAR SWITCH</button>
+                    <div>
+                        <button class="btn" id="cerrar-punto-btn">CERRAR</button>
+                        <button class="btn" id="guardar-punto">GUARDAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../js/edificiodeposgrados.js"></script>
 </body>
+
 </html>

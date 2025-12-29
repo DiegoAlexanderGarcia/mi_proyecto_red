@@ -5,16 +5,14 @@ require_once "conexion.php"; // crea $pdo
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
-    echo json_encode(["success" => false, "message" => "Datos vacíos"]);
+    echo json_encode(["success" => false, "message" => "Datos vacíos o JSON inválido"]);
     exit;
 }
 
-$accion = $data["accion"] ?? "guardar"; // guardar | eliminar_switch | eliminar_puerto
+$accion = $data["accion"] ?? "guardar";
 
 try {
-  // =========================
-  // ELIMINAR SWITCH COMPLETO
-  // =========================
+// ELIMINAR SWITCH COMPLETO
     if ($accion === "eliminar_switch") {
         $id_switch = (int)($data["id_switch"] ?? 0);
         if (!$id_switch) throw new Exception("Falta id_switch");
@@ -26,9 +24,7 @@ try {
         exit;
     }
 
-  // =========================
-  // ELIMINAR UN PUERTO
-  // =========================
+// ELIMINAR UN PUERTO
     if ($accion === "eliminar_puerto") {
         $id_switch = (int)($data["id_switch"] ?? 0);
         $numero = (int)($data["numero_puerto"] ?? 0);
@@ -41,9 +37,7 @@ try {
         exit;
     }
 
-  // =========================
-  // GUARDAR / ACTUALIZAR SWITCH + PUERTOS
-  // =========================
+// GUARDAR / ACTUALIZAR SWITCH + PUERTOS
     $id_switch = $data["id_switch"] ?? null;
 
     $nombre = $data["nombre"] ?? "Sin Asignar";
@@ -58,20 +52,20 @@ try {
     $pdo->beginTransaction();
 
     if ($id_switch) {
-        // UPDATE SWITCH
-        $stmt = $pdo->prepare("
+        $id_switch = (int)$id_switch;
+
+    $stmt = $pdo->prepare("
         UPDATE switches
         SET nombre=?, ubicacion=?, serie=?, mac=?, id_zona=?
         WHERE id_switch=?
         ");
-        $stmt->execute([$nombre, $ubicacion, $serie, $mac, $id_zona, $id_switch]);
+    $stmt->execute([$nombre, $ubicacion, $serie, $mac, $id_zona, $id_switch]);
 
-    // Reemplazamos puertos (más simple y seguro)
+    // Reemplaza puertos (simple y consistente)
     $stmtDel = $pdo->prepare("DELETE FROM puertos_switch WHERE id_switch=?");
     $stmtDel->execute([$id_switch]);
 
     } else {
-        // INSERT SWITCH
         $stmt = $pdo->prepare("
         INSERT INTO switches (nombre, ubicacion, serie, mac, id_zona)
         VALUES (?,?,?,?,?)
@@ -80,7 +74,6 @@ try {
         $id_switch = (int)$pdo->lastInsertId();
     }
 
-  // INSERT PUERTOS
     $stmtPuerto = $pdo->prepare("
         INSERT INTO puertos_switch
         (id_switch, numero_puerto, nombre, localizacion, observaciones)
@@ -90,7 +83,7 @@ try {
     foreach ($puertos as $p) {
         $stmtPuerto->execute([
         $id_switch,
-        (int)$p["numero"],
+        (int)($p["numero"] ?? 0),
         $p["nombre"] ?? "N/A",
         $p["localizacion"] ?? "N/A",
         $p["observaciones"] ?? "N/A"

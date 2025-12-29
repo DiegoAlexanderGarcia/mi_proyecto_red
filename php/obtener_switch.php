@@ -23,11 +23,11 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $switches = [];
 
 foreach ($rows as $r) {
-    $id = $r["id_switch"];
+    $id = (int)$r["id_switch"];
 
     if (!isset($switches[$id])) {
         $switches[$id] = [
-        "id_switch" => (int)$id,
+        "id_switch" => $id,
         "nombre" => $r["nombre"],
         "ubicacion" => $r["ubicacion"],
         "serie" => $r["serie"],

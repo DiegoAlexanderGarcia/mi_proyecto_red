@@ -1,40 +1,12 @@
-async function guardarSwitchEnBD(payload) {
-    const resp = await fetch("../php/procesar_switch.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-    return await resp.json();
-}
-
-async function cargarSwitchesBD(idZona) {
-    const resp = await fetch(`../php/obtener_switch.php?id_zona=${idZona}`);
-    return await resp.json();
-}
-
-async function eliminarSwitchBD(id_switch) {
-    const resp = await fetch("../php/procesar_switch.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accion: "eliminar_switch", id_switch })
-    });
-    return await resp.json();
-}
-
-async function eliminarPuertoBD(id_switch, numero_puerto) {
-    const resp = await fetch("../php/procesar_switch.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accion: "eliminar_puerto", id_switch, numero_puerto })
-    });
-    return await resp.json();
-}
-
 // ===================================
 // 1. VARIABLES FIJAS (NO CAMBIAN POR SWITCH)
 // ===================================
-const NUM_PUERTOS = 30; 
+const NUM_PUERTOS = 30;
 const empty = 'N/A';
+
+let puertoSeleccionado = null; // número 1..30
+let switchSeleccionado = null; // switchId actual (switch-1-data o switch-2-data)
+
 
 // Elementos DOM de los modales (solo se buscan una vez)
 const modalFondo = document.getElementById('modalFondo');
@@ -46,6 +18,7 @@ const cerrarEditarBtn = document.getElementById('cerrarEditarBtn');
 const cerrarEditarX = document.getElementById('cerrarEditarX');
 const formEditar = document.getElementById('formEditar');
 const eliminarBtn = document.getElementById('eliminarBtn');
+const borrarPuertoBtn = document.getElementById("borrarPuertoBtn");
 
 // Elementos de información en el modal de vista (se rellenan dinámicamente)
 const tituloModal = document.getElementById('titulo');
@@ -54,7 +27,7 @@ const switchUbicacionInfo = document.getElementById('switchUbicacionInfo');
 const serieInfo = document.getElementById('serieInfo');
 const macInfo = document.getElementById('macInfo');
 const contenedorPuertos = document.getElementById('contenedorPuertos'); // Contenedor en Modal EDITAR
-const puertosVistaContenedor = document.getElementById('puertos-vista-contenedor'); 
+const puertosVistaContenedor = document.getElementById('puertos-vista-contenedor');
 
 
 // Campos generales del formulario de edición (se rellenan dinámicamente)
@@ -92,10 +65,16 @@ function cargarDatos(switchId) {
  * Rellena el Modal de Vista con los datos actuales, usando una TABLA para puertos.
  * ESTA ES LA FUNCIÓN MODIFICADA PARA MOSTRAR TABLA.
  */
-function actualizarVista(data) {
+function actualizarVista(switchId, data) {
+
+        if (!data) {
+        console.warn("actualizarVista recibió data undefined. switchId:", switchId);
+        data = getDefaultData();
+    }
+
     // 1. Datos Generales del Switch
     tituloModal.textContent = `Información del Switch: ${data.switchNombre || empty}`;
-    
+
     // Rellenar las filas de información general
     switchNombreInfo.innerHTML = `<i class="fa-solid fa-tag icon-blue"></i> Nombre: <strong>${data.switchNombre || 'Sin Asignar'}</strong>`;
     switchUbicacionInfo.innerHTML = `<i class="fa-solid fa-location-dot icon-blue"></i> Ubicación: <strong>${data.switchUbicacion || empty}</strong>`;
@@ -113,41 +92,61 @@ function actualizarVista(data) {
 
     // Contenedor para aplicar estilos de scroll
     const tablaContenedor = document.createElement('div');
-    tablaContenedor.className = 'tabla-contenedor'; 
+    tablaContenedor.className = 'tabla-contenedor';
 
     const tabla = document.createElement('table');
     tabla.id = 'tablaPuertos';
     tabla.innerHTML = `
-        <thead>
-            <tr>
-                <th>Puerto</th>
-                <th>NOMBRE</th>
-                <th>LOCALIZACIÓN</th>
-                <th>Observaciones</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
+            <thead>
+                    <tr>
+                        <th>Puerto</th>
+                        <th>NOMBRE</th>
+                        <th>LOCALIZACIÓN</th>
+                        <th>Observaciones</th>
+                        <th>Select</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
     `;
-    
+
     const tbody = tabla.querySelector('tbody');
 
     // Rellenar la tabla con los 30 puertos
     for (let i = 1; i <= NUM_PUERTOS; i++) {
         const pData = data.puertos[`puerto${i}`];
-        
+
         const fila = document.createElement('tr');
-        fila.innerHTML = `
+            fila.innerHTML = `
             <td>Punto ${i}</td>
             <td>${pData.nombre || empty}</td>
             <td>${pData.localizacion || empty}</td>
             <td>${pData.obs || empty}</td>
-        `;
+            <td>
+                <button class="btn btn-yellow btn-select-puerto" data-puerto="${i}">
+                Select
+                </button>
+            </td>
+            `;
+
         tbody.appendChild(fila);
     }
-    
+
     tablaContenedor.appendChild(tabla);
     puertosVistaContenedor.appendChild(tablaContenedor);
+    // Eventos Select
+    puertosVistaContenedor.querySelectorAll(".btn-select-puerto").forEach(btn => {
+    btn.addEventListener("click", () => {
+        puertoSeleccionado = Number(btn.dataset.puerto);
+
+        // resaltado visual opcional
+        puertosVistaContenedor.querySelectorAll("tr").forEach(tr => tr.classList.remove("fila-seleccionada"));
+        btn.closest("tr").classList.add("fila-seleccionada");
+
+        alert(`✅ Puerto seleccionado: ${puertoSeleccionado}`);
+    });
+    });
+
 }
 
 
@@ -156,7 +155,7 @@ function actualizarVista(data) {
  */
 function cargarDatosEditar(switchId) {
     const data = cargarDatos(switchId);
-    
+
     // Título del modal de edición
     const tituloEditar = document.querySelector('#modalEditar h2');
     tituloEditar.textContent = `EDITAR SWITCH: ${data.switchNombre || 'N/A'}`;
@@ -170,7 +169,7 @@ function cargarDatosEditar(switchId) {
     // Datos de los 30 puertos (Rellenar los campos existentes en el HTML)
     for (let i = 1; i <= NUM_PUERTOS; i++) {
         const pData = data.puertos[`puerto${i}`];
-        
+
         // Se buscan los IDs que están fijos en el HTML
         const inputNombre = document.getElementById(`nombre-${i}`);
         const inputLocalizacion = document.getElementById(`localizacion-${i}`);
@@ -193,11 +192,11 @@ function cargarDatosEditar(switchId) {
 // Función para cerrar el Modal de Vista y restaurar la vista completa (la tabla)
 function cerrarModalVista(switchId) {
     if (switchId) {
-         // Llama a actualizarVista para restaurar la vista completa (con la tabla)
-         actualizarVista(cargarDatos(switchId));
+        // Llama a actualizarVista para restaurar la vista completa (con la tabla)
+        actualizarVista(switchId, cargarDatos(switchId));
     }
-    
-    modalFondo.style.display = 'none'; 
+
+    modalFondo.style.display = 'none';
 }
 
 
@@ -209,29 +208,38 @@ function cerrarModalVista(switchId) {
  * Configura los eventos para un icono de switch específico.
  */
 function setupSwitch(iconoServidor) {
-    const switchId = iconoServidor.dataset.switchId; 
+    const switchId = iconoServidor.dataset.switchId;
+
+    const ID_ZONA = 18; // SISTEMAS
+    const DB_ID_KEY = `${switchId}-dbid`; // guarda el id_switch de la BD
+
 
     // Abrir Modal de Vista (clic en el ícono del servidor)
     iconoServidor.addEventListener('click', () => {
-        actualizarVista(cargarDatos(switchId)); 
-        modalFondo.style.display = 'flex';
+        switchSeleccionado = switchId;   // ✅ AÑADIR
+        puertoSeleccionado = null;       // ✅ AÑADIR (resetea selección)
+
+    actualizarVista(switchId, cargarDatos(switchId));
+    modalFondo.style.display = 'flex';
     });
 
+
+
     // Abrir Modal de Edición (Desde el modal de vista)
-    editarBtn.onclick = () => { 
-        cargarDatosEditar(switchId); 
+    editarBtn.onclick = () => {
+        cargarDatosEditar(switchId);
         modalFondo.style.display = 'none';
         modalEditar.style.display = 'flex';
     };
 
-    
+
 
 
     // 💾 Guardar datos (Submit del formulario)
-    formEditar.onsubmit = (e) => { 
+    formEditar.onsubmit = async (e) => {
         e.preventDefault();
 
-        // 1. Guardar datos generales
+        // 1) Datos generales
         const dataToSave = {
             switchNombre: switchNombre.value.trim() || 'Sin Asignar',
             switchUbicacion: switchUbicacion.value.trim() || 'N/A',
@@ -240,44 +248,129 @@ function setupSwitch(iconoServidor) {
             puertos: {}
         };
 
-        // 2. Guardar datos de los 30 puertos (leyendo los campos fijos)
+        // 2) Puertos (30)
+        const puertosArr = [];
         for (let i = 1; i <= NUM_PUERTOS; i++) {
-            dataToSave.puertos[`puerto${i}`] = {
-                // Usamos getElementById para leer los campos estáticos
-                nombre: document.getElementById(`nombre-${i}`).value.trim() || 'N/A',
-                localizacion: document.getElementById(`localizacion-${i}`).value.trim() || 'N/A',
-                obs: document.getElementById(`obs-${i}`).value.trim() || 'N/A'
-            };
+            const nombreVal = document.getElementById(`nombre-${i}`).value.trim() || 'N/A';
+            const locVal = document.getElementById(`localizacion-${i}`).value.trim() || 'N/A';
+            const obsVal = document.getElementById(`obs-${i}`).value.trim() || 'N/A';
+
+            dataToSave.puertos[`puerto${i}`] = { nombre: nombreVal, localizacion: locVal, obs: obsVal };
+
+            // formato para BD
+            puertosArr.push({
+                numero: i,
+                nombre: nombreVal,
+                localizacion: locVal,
+                observaciones: obsVal
+            });
         }
-        
-        localStorage.setItem(switchId, JSON.stringify(dataToSave)); 
-        actualizarVista(dataToSave); // Actualiza el modal de vista con la nueva tabla
+
+        // 3) Guardar en BD
+        const id_switch_bd = localStorage.getItem(DB_ID_KEY);
+        const payload = {
+            id_switch: id_switch_bd ? Number(id_switch_bd) : null, // si existe -> update
+            nombre: dataToSave.switchNombre,
+            ubicacion: dataToSave.switchUbicacion,
+            serie: dataToSave.serie,
+            mac: dataToSave.mac,
+            id_zona: ID_ZONA,
+            puertos: puertosArr
+        };
+
+        const json = await guardarSwitchEnBD(payload);
+
+        if (!json.success) {
+            alert("Error al guardar en BD: " + (json.message || "desconocido"));
+            return;
+        }
+
+        // 4) Guardar también en localStorage (Req.1)
+        localStorage.setItem(switchId, JSON.stringify(dataToSave));
+        localStorage.setItem(DB_ID_KEY, String(json.id_switch));
+
+        // 5) Refrescar UI
+        actualizarVista(switchId, dataToSave);
+
 
         modalEditar.style.display = 'none';
         modalFondo.style.display = 'flex';
-        alert(`¡Información del Switch ${dataToSave.switchNombre} guardada con éxito!`);
+        alert(`✅ Switch guardado (BD id=${json.id_switch})`);
     };
+
+    borrarPuertoBtn.onclick = async () => {
+    if (!switchSeleccionado || switchSeleccionado !== switchId) {
+        alert("Abre un switch primero.");
+        return;
+    }
+
+    if (!puertoSeleccionado) {
+        alert("Primero selecciona un puerto con SELECT.");
+        return;
+    }
+
+    const confirmar = confirm(`¿Borrar el puerto ${puertoSeleccionado}?`);
+    if (!confirmar) return;
+
+    // 1) borrar en BD si el switch ya existe en BD
+    const dbKey = `${switchId}-dbid`;
+    const dbid = localStorage.getItem(dbKey);
+
+    if (dbid) {
+        const json = await eliminarPuertoBD(Number(dbid), puertoSeleccionado);
+        if (!json.success) {
+        alert("Error borrando puerto en BD: " + (json.message || "desconocido"));
+        return;
+        }
+    }
+
+    // 2) borrar en localStorage (poner en N/A)
+    const data = cargarDatos(switchId);
+    data.puertos[`puerto${puertoSeleccionado}`] = { nombre: "N/A", localizacion: "N/A", obs: "N/A" };
+    localStorage.setItem(switchId, JSON.stringify(data));
+
+    // 3) refrescar vista
+    actualizarVista(switchId, data);
+
+    alert(`✅ Puerto ${puertoSeleccionado} borrado.`);
+    };
+
+
 
     // 🗑️ Eliminar datos (Botón ELIMINAR SWITCH)
-    eliminarBtn.onclick = () => { 
+    eliminarBtn.onclick = async () => {
         const data = cargarDatos(switchId);
-        const confirmar = confirm(`¿Estás seguro de que quieres ELIMINAR toda la información del Switch: ${data.switchNombre || 'N/A'}?`);
+        const confirmar = confirm(`¿Eliminar el switch "${data.switchNombre || 'N/A'}" y todos sus puertos?`);
 
-        if (confirmar) {
-            localStorage.removeItem(switchId); 
-            const emptyData = getDefaultData();
-            
-            // Reflejar cambios
-            actualizarVista(emptyData); // Muestra la tabla vacía
-            cargarDatosEditar(switchId); 
-            
-            modalEditar.style.display = 'none';
-            modalFondo.style.display = 'flex'; 
+        if (!confirmar) return;
 
-            alert("¡Información del Switch eliminada y restablecida!");
+        const dbid = localStorage.getItem(DB_ID_KEY);
+
+        // 1) borrar en BD si existe
+        if (dbid) {
+            const json = await eliminarSwitchBD(Number(dbid));
+            if (!json.success) {
+                alert("Error eliminando en BD: " + (json.message || "desconocido"));
+                return;
+            }
         }
+
+        // 2) borrar en localStorage
+        localStorage.removeItem(switchId);
+        localStorage.removeItem(DB_ID_KEY);
+
+        // 3) refrescar UI
+        const emptyData = getDefaultData();
+        actualizarVista(switchId, emptyData);
+        cargarDatosEditar(switchId);
+
+        modalEditar.style.display = 'none';
+        modalFondo.style.display = 'flex';
+
+        alert("✅ Switch eliminado.");
     };
-    
+
+
     // Asignar el cierre con el switchId para restaurar la vista completa
     cerrarBtn.addEventListener('click', () => cerrarModalVista(switchId));
     cerrarX.addEventListener('click', () => cerrarModalVista(switchId));
@@ -304,11 +397,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     todosLosIconos.forEach(icono => {
         // Inicializar el manejo de eventos para cada switch
-        setupSwitch(icono); 
+        setupSwitch(icono);
     });
 });
 
- // =============================
+// =============================
 // VARIABLES GENERALES
 // =============================
 
