@@ -1,0 +1,528 @@
+      body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+         align-items: center;
+         min-height: 100vh;
+         background: #ffffff;
+         margin: 0;
+         font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #ff0404;
+            margin: 20px 0;
+        }
+
+        .mapa {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 4px solid #ff0800;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.986);
+        }
+
+        .oficina {
+            position: absolute;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            text-align: center;
+            padding-top: 5px;
+            background:rgb(109, 85, 88);
+            cursor: pointer;
+        }
+
+        .oficina h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .icono {
+            position: absolute;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        
+        /* Contenedor del punto de red y el botón de editar */
+        .punto-container {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+              z-index: 5; 
+        }
+
+        /* Puntos de red como íconos */
+        .punto {
+            width: auto;
+            height: auto;
+            border-radius: 0;
+            cursor: grab;
+            border: none;
+            background: none;
+            font-size: 24px;
+            color: white;
+            transition: transform 0.2s;
+
+        }
+          .punto:hover {
+            transform: scale(1.2);
+        }
+
+
+        /* Cambia el color del ícono según el estado */
+        .punto.activo {
+            color: limegreen;
+        }
+
+        .punto.inactivo {
+            color: red;
+        }
+        
+        .btn-editar {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+/* =========================================== */
+/* 0. ÍCONO PRINCIPAL (Se mantiene) */
+/* =========================================== */
+.icono-posicion {
+    position: absolute;
+    z-index: 5;
+}
+
+/* =========================================== */
+/* 1. ESTILOS BASE DEL MODAL (Dark Mode Core) */
+/* =========================================== */
+.modal-fondo {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9); 
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal2 {
+    background: #1a1a1a; 
+    border-radius: 4px; 
+    width: 90%; 
+    max-width: 900px; 
+    padding: 25px; 
+    position: relative;
+    color: #f0f0f0; 
+    border: 1px solid #333; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
+    max-height: 90vh; /* Altura máxima del modal */
+    /* 💥 CRÍTICO: QUITAMOS EL OVERFLOW-Y AQUÍ para que no compita */
+    /* overflow-y: auto; */ 
+    overflow-x: hidden; 
+    scrollbar-width: thin; 
+    scrollbar-color: #666 #1a1a1a;
+}
+.modal2::-webkit-scrollbar { width: 8px; }
+.modal2::-webkit-scrollbar-thumb { background: #666; border-radius: 10px; }
+
+/* Contenedor del Título y la X */
+.modal-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+.modal-header-container h2 { margin: 0; flex: 1; font-size: 1.3em; }
+
+/* Botón de Cerrar (X) */
+.cerrar-x {
+    position: absolute;
+    top: 15px; right: 15px;
+    width: 24px; height: 24px;
+    background: #444;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .2s;
+    user-select: none;
+    z-index: 1000; 
+}
+.cerrar-x:hover { background: #d60000; transform: scale(1.15); }
+
+/* Títulos de Sección */
+.seccion-titulo {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 25px; 
+    margin-bottom: 15px; 
+    padding-bottom: 0;
+}
+
+/* Colores Brillantes para los Títulos */
+.seccion-titulo.blue { 
+    color: #00bcd4; 
+}
+.seccion-titulo.green { 
+    color: #28a745;
+}
+
+
+/* MODAL VISTA: Filas de Datos (Nombre: Sin Asignar) */
+.info-data-row {
+    background: #2a2a2a; 
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    color: #ddd;
+}
+.info-data-row i.icon-blue { 
+    color: #00bcd4; 
+    font-size: 1.1em;
+}
+
+/* =========================================== */
+/* 2. INPUTS Y LABELS (Modal de Edición) */
+/* =========================================== */
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #ccc;
+    font-size: 0.9em;
+}
+
+input, select, textarea {
+    width: 100%;
+    background: #0d0d0d; 
+    color: white;
+    border: 1px solid #444; 
+    border-radius: 2px; 
+    padding: 10px; 
+    margin-top: 5px;
+    box-sizing: border-box; 
+    transition: border-color 0.2s;
+}
+input:focus, textarea:focus {
+    border-color: #00bcd4; 
+    outline: none; 
+}
+textarea { resize: vertical; height: 70px; }
+
+/* =========================================== */
+/* 3. ESTILOS DE TABLA (Modal de Vista - CUADRICULADA y Fija) */
+/* =========================================== */
+.tabla-contenedor {
+    width: 100%;
+    /* 💥 CRÍTICO: ELIMINAMOS MAX-HEIGHT Y OVERFLOW-Y/X AQUÍ */
+    /* Esto es ahora un contenedor "pasivo" */
+    border-radius: 4px;
+    border-top: 1px solid #333; 
+    border-bottom: 1px solid #333; 
+}
+
+#tablaPuertos {
+    width: 100%;
+    border-collapse: collapse; 
+    font-size: 14px; 
+    table-layout: fixed; 
+    background: #1a1a1a; 
+}
+
+/* ENCABEZADOS DE LA TABLA (THEAD TH) */
+#tablaPuertos thead th {
+    background: #1a1a1a;
+    color: #00bcd4; 
+    padding: 12px 10px; 
+    text-align: left;
+    
+    /* 💥 CRÍTICO: PROPIEDADES PARA ENCABEZADO FIJO */
+    position: sticky; 
+    top: 0; /* ¡PEGA EL ENCABEZADO ARRIBA DEL CONTENEDOR CON SCROLL! */
+    z-index: 10; 
+    
+    /* LÍNEA SEPARADORA */
+    border: none; 
+    border-bottom: 3px solid #00bcd4; 
+
+    font-weight: bold;
+    text-transform: uppercase; 
+}
+
+/* Bordes verticales en el encabezado (Cierre vertical) */
+#tablaPuertos thead th:first-child { 
+    border-left: 1px solid #333; 
+}
+#tablaPuertos thead th:not(:last-child) {
+    border-right: 1px solid #333; 
+}
+#tablaPuertos thead th:last-child { 
+    border-right: 1px solid #333; 
+}
+
+
+/* CELDAS DE DATOS (TBODY TD) */
+#tablaPuertos tbody td {
+    background: #1a1a1a; 
+    color: #ddd;
+    padding: 10px 10px; 
+    border-bottom: 1px solid #333; 
+    word-break: break-word; 
+}
+
+/* Bordes verticales en el cuerpo de la tabla (Cierre vertical) */
+#tablaPuertos tbody td:first-child {
+    font-weight: bold; 
+    color: #f0f0f0; 
+    border-left: 1px solid #333; 
+}
+
+#tablaPuertos tbody td:not(:last-child) {
+    border-right: 1px solid #333; 
+}
+
+#tablaPuertos tbody td:last-child {
+    border-right: 1px solid #333; 
+}
+
+/* Filas pares para contraste */
+#tablaPuertos tbody tr:nth-child(even) td { 
+    background: #111; 
+}
+
+
+/* Ancho de columnas */
+#tablaPuertos th:nth-child(1), #tablaPuertos td:nth-child(1) { width: 15%; } 
+#tablaPuertos th:nth-child(2), #tablaPuertos td:nth-child(2) { width: 25%; } 
+#tablaPuertos th:nth-child(3), #tablaPuertos td:nth-child(3) { width: 25%; } 
+#tablaPuertos th:nth-child(4), #tablaPuertos td:nth-child(4) { width: 35%; }
+
+
+/* =========================================== */
+/* 4. ESTILOS DE PUERTO (Modal de Edición) */
+/* =========================================== */
+#contenedorPuertos {
+    max-height: 35vh;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+.puerto-bloque {
+    border: 1px solid #505050;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #2a2a2a; 
+}
+.puerto-bloque h4 {
+    color: #28a745; 
+    margin: 5px 0 10px 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+    font-size: 1em;
+}
+.puerto-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end; 
+}
+.puerto-inputs .campo-wrapper { flex-grow: 1; }
+
+
+/* =========================================== */
+/* 5. BOTONES */
+/* =========================================== */
+.modal-footer-botones {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px; 
+    margin-top: 25px;
+    border-top: 1px solid #333;
+    padding-top: 15px;
+}
+
+.btn {
+    border: none;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    border-radius: 2px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-grow: 0;
+}
+
+.botones-derecha {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end; 
+}
+.btn-left {
+    margin-right: auto; 
+}
+
+/* Colores Vivos */
+.btn-red { 
+    background: #de1608; 
+}
+
+.btn-blue { 
+    background: #007bff; 
+}
+
+/* Edición y Detalle */
+.btn-yellow, .btn-port-detail { 
+    background-color: #ffc107; 
+    color: black; 
+}
+
+.btn-port-detail {
+    height: 38px;
+    font-size: 0.9em;
+    padding: 0 15px;
+    margin-bottom: 0px; 
+}
+
+
+/* =========================================== */
+/* 6. NUEVOS ESTILOS PARA PUERTOS INDIVIDUALES (Vista) */
+/* =========================================== */
+#puertos-vista-contenedor {
+    width: 100%;
+    max-height: 280px; 
+    overflow-y: auto; /* 💥 CRÍTICO: ESTE ES EL ÚNICO LUGAR DONDE HAY SCROLL PARA LA TABLA */
+    padding-right: 5px; 
+    margin-top: 15px; 
+}
+
+.puerto-info-bloque {
+    background: #2a2a2a; 
+    border: 1px solid #444;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    color: #f0f0f0;
+}
+
+.puerto-info-bloque h4 {
+    color: #28a745; 
+    margin: 0 0 8px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #444;
+    font-size: 1.1em;
+}
+
+.puerto-info-dato {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    font-size: 0.95em;
+}
+
+.puerto-info-dato .label {
+    font-weight: bold;
+    color: #00bcd4; 
+    min-width: 100px; 
+}
+
+.puerto-info-dato .valor {
+    flex: 1;
+    color: #ddd;
+    word-break: break-word; 
+}
+
+
+ /* El contenedor principal de la puerta - ¡AJUSTADO! */
+.puerta-plano {
+    position: absolute;
+    width: 60px; /* Longitud de la puerta (antes 50px) */
+    height: 60px; /* Longitud de la puerta (antes 50px) */
+    text-decoration: none;
+    display: block;
+    overflow: hidden; 
+    transform: rotate(0deg);
+}
+
+/* El marco ya tiene 60px de ancho, ¡está correcto! */
+.puerta-plano .marco {
+    position: absolute;
+    width: 60px; /* Ancho de la línea del marco: OK */
+    height: 4px;
+    background-color: #000;
+    top: 0;
+    left: 0;
+}
+
+/* El arco ya tiene 120px x 60px, ¡está correcto para 60px de puerta! */
+.puerta-plano .arco {
+    position: absolute;
+    width: 120px; /* El doble de la longitud de la puerta (60px * 2) */
+    height: 60px; /* La longitud de la puerta */
+    border: 2px solid #000;
+    border-bottom-left-radius: 100%;
+    border-right: none;
+    border-top: none;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
+}
+/* --- POSICIONES DE LAS PUERTAS --- */
+/* Puerta 1 - Ya tiene 90deg */
+.puerta-1 { 
+    top: 340px; 
+    left: 280px; 
+    transform-origin: bottom right; 
+    transform: rotate(90deg);
+}
+
+     .icono-posicion {
+          position: absolute;
+         font-size: 50px; /* Tamaño de los iconos */
+         z-index: 10;
+        }
+     /* estilos de los mesa */
+        .mesa {
+          position: absolute;
+         background-color: #8b5a2b; /* Marrón oscuro */
+          border: 1px solid #8b5a2b;
+          border-radius: 6px;
+
+        }
+
+
+        .mesa1 { top: 210px;left: 100px;width: 40px;height: 140px;  }
+        .mesa2 { top: 210px;left: 120px;width: 40px;height: 140px; }
+        .mesa3 { top: 25px;left: 100px;width: 30px;height: 140px; }
+        .mesa4 { top: 25px;left: 120px;width: 40px;height: 140px; }
+      
+        .mesa6 { top: 70px;left: 280px;width: 50px;height: 270px;}
+           /* Título del piso */
+        #titulo-1 {
+            position: absolute;
+            color: #0000FF;
+            font-size: 12px;
+            top: 360px;
+            left: 300px;
+        }
+       

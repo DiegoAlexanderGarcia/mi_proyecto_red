@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficinas Poryecciòn social </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+          body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+         align-items: center;
+         min-height: 100vh;
+         background: #ffffff;
+         margin: 0;
+         font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #ff0404;
+            margin: 20px 0;
+        }
+
+        .mapa {
+            position: relative;
+            width: 270px;
+            height: 220px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 4px solid #ff0800;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.986);
+        }
+
+        .oficina {
+            position: absolute;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            text-align: center;
+            padding-top: 5px;
+            background:rgb(109, 85, 88);
+            cursor: pointer;
+        }
+
+        .oficina h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .icono {
+            position: absolute;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        
+        /* Contenedor del punto de red y el botón de editar */
+        .punto-container {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 5;
+        }
+
+        /* Puntos de red como íconos */
+        .punto {
+            width: auto;
+            height: auto;
+            border-radius: 0;
+            cursor: grab;
+            border: none;
+            background: none;
+            font-size: 24px;
+            color: white;
+             transition: transform 0.2s;
+        }
+              .punto:hover {
+            transform: scale(1.2);
+        }
+
+        /* Cambia el color del ícono según el estado */
+        .punto.activo {
+            color: limegreen;
+        }
+
+        .punto.inactivo {
+            color: red;
+        }
+        
+        .btn-editar {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        /* Estilos del Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+
+          .modal-content {
+    background: #000;
+    color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    animation: neon 0.4s ease-in;
+}
+@keyframes neon {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+ /* ===== Modal con encabezado y pie fijos ===== */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+/* Contenedor principal con scroll interno */
+.modal-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 15px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #111;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-body::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 10px;
+}
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 10px;
+}
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+}
+
+/* Encabezado fijo */
+.modal-header {
+    position: sticky;
+    top: 0;
+    background: #111;
+    padding: 10px 20px;
+    z-index: 10;
+    border-bottom: 2px solid #222;
+}
+
+/* Pie fijo */
+.modal-footer {
+    position: sticky;
+    bottom: 0;
+    background: #111;
+    padding: 10px 20px;
+    z-index: 10;
+    border-top: 2px solid #222;
+}
+
+
+    
+    
+        .modal-header {
+            background: #2b2b2b;
+            padding: 15px 20px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 20px;
+            text-align: left;
+        }
+        
+        /* ESTILOS MEJORADOS PARA LA INFORMACIÓN */
+        .modal-body .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 8px 10px;
+            background-color: #2b2b2b;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+
+        .modal-body .info-icon {
+            color: #00eaff;
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .modal-body .info-label {
+            font-weight: bold;
+            color: #ddd;
+            margin-right: 5px;
+            flex-shrink :0;
+        }
+
+        .modal-body .info-value {
+            flex: 1;
+            color: #aaa;
+            word-break: break-all;
+        }
+        
+        #form-punto label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #ccc;
+        }
+        
+        #form-punto input:not([type="checkbox"]), #form-punto select, #form-punto textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+        }
+        
+        #form-punto select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ccc%22%20d%3D%22M287%20146.2l-144.1%20144.1c-2.4%202.4-5.5%203.6-8.7%203.6s-6.3-1.2-8.7-3.6L5.4%20146.2c-4.8-4.8-4.8-12.5%200-17.3s12.5-4.8%2017.3%200l131.6%20131.6L269.7%20129c4.8-4.8%2012.5-4.8%2017.3%200s4.8%2012.5%200%2017.3z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 10px;
+        }
+
+        #form-punto input::placeholder, #form-punto textarea::placeholder {
+            color: #888;
+        }
+
+          /* NUEVOS ESTILOS PARA EL DROPDOWN MULTIPLE AVANZADO (MUCHO MÁS BONITO) */
+        .custom-multiselect {
+            position: relative;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .multiselect-btn {
+            padding: 10px;
+            background: #2b2b2b; /* Fondo más oscuro para contraste */
+            border: 1px solid #ffffff; /* Borde de color azul llamativo */
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            color: #fff;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .multiselect-btn::after {
+            content: '\25BC'; /* Icono de flecha hacia abajo */
+            font-size: 10px;
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+
+        .multiselect-btn.active::after {
+            transform: rotate(180deg); /* La flecha gira al abrir */
+        }
+
+        .multiselect-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            border: 1px solid #ffffff;
+            background: #333; /* Fondo de la lista */
+            border-radius: 0 0 6px 6px;
+            max-height: 180px; /* Altura máxima con scroll */
+            overflow-y: auto;
+            z-index: 50; /* Para que quede encima de otros elementos */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            display: none; /* Oculto por defecto */
+            padding: 5px 0;
+        }
+
+        .multiselect-dropdown label {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #ddd;
+            transition: background 0.2s;
+        }
+
+        .multiselect-dropdown label:hover {
+            background: #007bff44; /* Resaltado al pasar el mouse */
+            color: #fff;
+        }
+
+        .multiselect-dropdown input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: #007bff; /* Color del checkmark */
+        }
+        /* FIN NUEVOS ESTILOS */
+
+        .modal-footer {
+            background: #2b2b2b;
+            padding: 15px 20px;
+            text-align: right;
+            border-top: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 5px;
+            transition: background-color 0.2s;
+        }
+        
+        #guardar-punto {
+            background-color: #007bff;
+            color: white;
+        }
+
+      
+
+        #cerrar-punto-btn, #cerrar-ver-btn {
+            background-color: #f50000;
+            color: white;
+        }
+
+        
+        .btn-eliminar {
+            background-color: #f50000;
+            color: white;
+        }
+
+      
+        #btn-editar-info {
+            background-color: #f50000;
+            color: white;
+        }
+        
+      
+ /* El contenedor principal de la puerta - ¡AJUSTADO! */
+.puerta-plano {
+    position: absolute;
+    width: 60px; /* Longitud de la puerta (antes 50px) */
+    height: 60px; /* Longitud de la puerta (antes 50px) */
+    text-decoration: none;
+    display: block;
+    overflow: hidden; 
+    transform: rotate(0deg);
+}
+
+/* El marco ya tiene 60px de ancho, ¡está correcto! */
+.puerta-plano .marco {
+    position: absolute;
+    width: 60px; /* Ancho de la línea del marco: OK */
+    height: 4px;
+    background-color: #000;
+    top: 0;
+    left: 0;
+}
+
+/* El arco ya tiene 120px x 60px, ¡está correcto para 60px de puerta! */
+.puerta-plano .arco {
+    position: absolute;
+    width: 120px; /* El doble de la longitud de la puerta (60px * 2) */
+    height: 60px; /* La longitud de la puerta */
+    border: 2px solid #000;
+    border-bottom-left-radius: 100%;
+    border-right: none;
+    border-top: none;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
+}
+/* --- POSICIONES DE LAS PUERTAS --- */
+/* Puerta 1 - Ya tiene 90deg */
+.puerta-1 { 
+    top: 0px; 
+    left: 210px; 
+    transform-origin: bottom right; 
+ 
+}
+ /* estilos de los mesa */
+        .mesa {
+          position: absolute;
+         background-color: #8b5a2b; /* Marrón oscuro */
+          border: 1px solid #8b5a2b;
+          border-radius: 6px;
+
+        }
+   .mesa1 { top: 40px;left: 100px;width: 30px;height: 70px;  }
+   .mesa2 { top: 100px;left: 208px;width: 30px;height: 90px; transform:  rotate(90deg);}
+         .silla {
+           position: absolute;
+          width: 40px;
+         height: 40px;
+          background-color: #d3d3d3; /* Gris claro */
+         border-radius: 50%;
+         border: 2px solid #808080; /* Borde gris oscuro */
+          box-sizing: border-box;
+        }
+
+        .silla-2 { top: 0px; left: 95px;}
+        .silla-3 {  top: 165px; left: 200px; }
+        .silla-4 { top:55px;left: 135px;   }
+        .silla-5 {top: 115px;left: 95px;}
+        .silla-6 {top: 55px;left: 58px; }
+     .icono-posicion {
+          position: absolute;
+         font-size: 50px; /* Tamaño de los iconos */
+         z-index: 10;
+        }
+      /* Estilo base del estante (la estructura principal vertical) */
+    .estante-vertical {
+      position: absolute;
+      width: 70px; /* Ancho del estante */
+      height: 150px; /* Alto del estante */
+      background-color: #8B4513; /* Color de madera */
+      border-radius: 10px; /* Bordes redondeados */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px 5px; /* Espacio para los libros */
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column; /* Apila los libros verticalmente */
+      justify-content: space-around; /* Distribuye los libros */
+      align-items: center; /* Centra los libros horizontalmente */
+    }
+
+    /* Estilo de los libros (son rectángulos horizontales, como en la imagen que me enviaste antes) */
+    .libro {
+      width: 80%; /* Ancho del libro dentro del estante */
+      height: 15px; /* Alto del libro */
+      border-radius: 3px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Variaciones de los colores de los libros */
+    .libro.rojo { background-color: #E74C3C; }
+    .libro.azul { background-color: #3498DB; }
+    .libro.verde { background-color: #2ECC71; }
+    .libro.amarillo { background-color: #F1C40F; }
+    .libro.morado { background-color: #9B59B6; }
+    .libro.naranja { background-color: #E67E22; }
+
+    /* Posiciones de los estantes en el plano */
+    .estante-1 { top: 5px; left: 0px; width: 40px; height: 70px;}
+      /* Título del piso */
+        #titulo-1 {
+            position: absolute;
+            color: #0000FF;
+            font-size: 12px;
+            top: 40px;
+            left: 220px;
+        }
+    
+    </style>
+</head>
+<body>
+    <h1>PROYECCIÒN SOCIAL </h1>
+    <div class="mapa">
+
+      <a href="admin.html" class="puerta-plano puerta-1">
+    <div class="marco"></div>
+    <div class="arco"></div>
+  </a>
+        <h1 id="titulo-1"> SALIDA</h1>
+
+     <div class="mesa mesa1"></div>
+     <div class="mesa mesa2"></div>
+
+      <div class="silla silla-2"></div>
+        <div class="silla silla-3"></div>
+        <div class="silla silla-4"></div>
+        <div class="silla silla-5"></div>
+        <div class="silla silla-6"></div>
+      <i class="fa-solid fa-laptop icono-posicion" id="icono-laptop" style="top:130px; left:180px; color:rgb(23, 151, 7);font-size: 30px;" data-info="Laptop de oficina"></i>
+     <i class="fa-solid fa-mobile-alt icono-posicion" id="icono-telefono" style="top:130px; left:220px; color:rgb(255, 16, 16);font-size: 30px;" data-info="Teléfono de la oficina"></i>
+   <i class="fa-solid fa-user icono" id="icono-ingeniero-user" style="top:170px; left:210px; color:rgb(252, 33, 252); " data-info="Usuario"></i>
+
+      <div class="punto-container" style="top:135px; left:245px; ">
+      <i class="fas fa-wifi punto activo" id="punto-PROYECCIÒN SOCIAL"style="font-size: 20px;"></i>
+     </div>
+
+      <div class="estante-vertical estante-1">
+          <div class="libro rojo"></div>
+          <div class="libro azul"></div>
+         <div class="libro verde"></div>
+         <div class="libro amarillo"></div>
+          <div class="libro morado"></div>
+          <div class="libro naranja"></div>
+        </div>
+       <div id="modal-ver-punto" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="titulo-ver-punto">Información Punto de Red</h2>
+            <span class="close-btn" id="cerrar-ver">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="info-item">
+                <i class="fa-solid fa-user info-icon"></i>
+                <span class="info-label">Usuario:</span>
+                <span class="info-value" id="ver-Usuario-Puesto"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-user info-icon"></i>
+                <span class="info-label"> Puesto:</span>
+                <span class="info-value" id="ver-nombre-puesto"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-circle-info info-icon"></i>
+                <span class="info-label">Estado:</span>
+                <span class="info-value" id="ver-estado-punto"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-computer info-icon"></i>
+                <span class="info-label">Equipos Conectados:</span>
+                <span class="info-value" id="ver-equipos-conectados"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-hashtag info-icon"></i>
+                <span class="info-label">ID Punto:</span>
+                <span class="info-value" id="ver-id-punto"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-plug info-icon"></i>
+                <span class="info-label">Patch Panel:</span>
+                <span class="info-value" id="ver-patch-panel"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-network-wired info-icon"></i>
+                <span class="info-label">Switch:</span>
+                <span class="info-value" id="ver-switch"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-server info-icon"></i>
+                <span class="info-label">Centro de Cableado:</span>
+                <span class="info-value" id="ver-centro-cableado"></span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-comment info-icon"></i>
+                <span class="info-label">Observaciones:</span>
+                <span class="info-value" id="ver-observaciones"></span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" id="cerrar-ver-btn">CERRAR</button>
+            <button class="btn" id="btn-editar-info">EDITAR</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-editar-punto" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="titulo-punto">EDITAR PUNTO DE RED</h2>
+            <span class="close-btn" id="cerrar-punto">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="form-punto">
+                <label for="ver-Usuario-Puesto">USUARIO </label>
+                <input 
+                    type="text" 
+                    id="ver-Usuario-Puesto-input" name="usuarioPuesto"       placeholder="Ej:Usuario De Puesto"
+                >
+
+                <label for="nombre-puesto"> PUESTO</label>
+                <input type="text" id="nombre-puesto" name="nombrePuesto" placeholder="Ej: Puesto de Asistente">
+
+
+                <label for="estado-punto">ESTADO</label>
+                <select id="estado-punto" name="estado">
+                    <option value="activo">ACTIVO </option>
+                    <option value="inactivo">INACTIVO </option>
+                </select>
+
+                <label>EQUIPOS CONECTADOS (Selección Múltiple)</label>
+                <div class="custom-multiselect">
+                    <div id="multiselect-button" class="multiselect-btn">
+                        Seleccionar Equipos...
+                    </div>
+                    <div id="multiselect-dropdown" class="multiselect-dropdown">
+                        <label><input type="checkbox" name="equipo" value="COMPUTADOR"> COMPUTADOR </label>
+                        <label><input type="checkbox" name="equipo" value="IMPRESORA"> IMPRESORA</label>
+                        <label><input type="checkbox" name="equipo" value="TELÈFONO"> TELÈFONO </label>
+                        <label><input type="checkbox" name="equipo" value="ROUTER"> ROUTER</label>
+                        <label><input type="checkbox" name="equipo" value="OTROS "> OTROS </label>
+                    </div>
+                </div>
+                <label for="id-punto">ID PUNTO</label>
+                <input type="text" id="id-punto" name="id" placeholder="ID PUNTO (EJ: A-R-01)">
+
+                <label for="patch-panel">PATCH PANEL</label>
+                <input type="text" id="patch-panel" name="patchPanel" placeholder="Ej: 1A-10">
+
+                <label for="switch">SWITCH</label>
+                <input type="text" id="switch" name="switch" placeholder="Ej: S-Piso1-24P-01 Puerto: 15">
+
+                <label for="centro-cableado">CENTRO DE CABLEADO</label>
+                <input type="text" id="centro-cableado" name="centroCableado" placeholder="Ej: Sala de Servidores 1">
+
+                <label for="observaciones">OBSERVACIONES</label>
+                <textarea id="observaciones" name="observaciones" rows="3" placeholder="NOTAS ADICIONALES..."></textarea>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-eliminar" id="eliminar-punto">ELIMINAR</button>
+            <div>
+                <button class="btn" id="cerrar-punto-btn">CERRAR</button>
+                <button class="btn" id="guardar-punto">GUARDAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+  <script>
+       // =============================
+// VARIABLES GENERALES
+// =============================
+
+const modalVerPunto = document.getElementById("modal-ver-punto");
+const modalEditarPunto = document.getElementById("modal-editar-punto");
+
+const cerrarVerBtn = document.getElementById("cerrar-ver");
+const cerrarVerBtn2 = document.getElementById("cerrar-ver-btn");
+const cerrarPuntoBtn = document.getElementById("cerrar-punto");
+const cerrarPuntoBtn2 = document.getElementById("cerrar-punto-btn");
+
+const btnEditarInfo = document.getElementById("btn-editar-info");
+const guardarPuntoBtn = document.getElementById("guardar-punto");
+const eliminarPuntoBtn = document.getElementById("eliminar-punto");
+
+// Campos Ver
+const verUsuarioPuesto = document.getElementById("ver-Usuario-Puesto");
+const verNombrePuesto = document.getElementById("ver-nombre-puesto");
+const verEstadoPunto = document.getElementById("ver-estado-punto");
+const verEquiposConectados = document.getElementById("ver-equipos-conectados");
+const verIdPunto = document.getElementById("ver-id-punto");
+const verPatchPanel = document.getElementById("ver-patch-panel");
+const verSwitch = document.getElementById("ver-switch");
+const verCentroCableado = document.getElementById("ver-centro-cableado");
+const verObservaciones = document.getElementById("ver-observaciones");
+
+// Campos Editar
+const usuarioPuestoInput = document.getElementById("ver-Usuario-Puesto-input");
+const nombrePuestoInput = document.getElementById("nombre-puesto");
+const estadoPuntoSelect = document.getElementById("estado-punto");
+const idPuntoInput = document.getElementById("id-punto");
+const patchPanelInput = document.getElementById("patch-panel");
+const switchInput = document.getElementById("switch");
+const centroCableadoInput = document.getElementById("centro-cableado");
+const observacionesTextarea = document.getElementById("observaciones");
+
+// Campo oculto del ID REAL
+const idPuntoRealInput = document.createElement("input");
+idPuntoRealInput.type = "hidden";
+idPuntoRealInput.id = "id-punto-real";
+document.body.appendChild(idPuntoRealInput);
+
+// Multiselect
+const multiselectButton = document.getElementById("multiselect-button");
+const multiselectDropdown = document.getElementById("multiselect-dropdown");
+const multiselectCheckboxes = multiselectDropdown.querySelectorAll('input[type="checkbox"]');
+
+let puntoActual = null;
+window.PUNTOS_DB = [];
+
+
+// =============================
+// CARGAR BD DESDE PHP
+// =============================
+async function cargarDatosDesdeBD() {
+    try {
+        const response = await fetch("../php/obtener_puntos.php");
+        const json = await response.json();
+
+        if (json.success) {
+            window.PUNTOS_DB = json.data;
+        } else {
+            console.error("Error al cargar puntos:", json.message);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+cargarDatosDesdeBD();
+
+
+// =============================
+// MULTISELECT
+// =============================
+function updateMultiselectText() {
+    const checked = Array.from(multiselectCheckboxes).filter(cb => cb.checked);
+    if (checked.length === 0) multiselectButton.textContent = "Seleccionar Equipos...";
+    else if (checked.length === 1) multiselectButton.textContent = checked[0].value;
+    else multiselectButton.textContent = `${checked.length} Equipos Seleccionados`;
+}
+
+multiselectButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    multiselectDropdown.style.display = multiselectDropdown.style.display === "block" ? "none" : "block";
+});
+window.addEventListener("click", () => {
+    multiselectDropdown.style.display = "none";
+});
+multiselectDropdown.addEventListener("change", updateMultiselectText);
+
+
+// =============================
+// CARGAR ESTADO INICIAL (LOCALSTORAGE)
+// =============================
+function cargarEstadoInicial() {
+    const puntos = document.querySelectorAll(".punto");
+    puntos.forEach(p => {
+        const datos = JSON.parse(localStorage.getItem(p.id));
+        if (datos?.estado) {
+            p.classList.remove("activo", "inactivo");
+            p.classList.add(datos.estado);
+        }
+    });
+}
+
+
+// =============================
+// CLICK EN UN PUNTO
+// =============================
+document.querySelectorAll(".punto").forEach(punto => {
+    punto.addEventListener("click", () => {
+        puntoActual = punto;
+
+
+        // Intentar obtener info desde BD
+        const dbItem = window.PUNTOS_DB.find(x => x.id_punto_codigo === punto.id);
+
+        if (dbItem) {
+            idPuntoRealInput.value = dbItem.id_punto;
+            verUsuarioPuesto.textContent = dbItem.usuario || "Sin Usuario";
+            verNombrePuesto.textContent = dbItem.puesto || "Sin puesto";
+            verEstadoPunto.textContent = dbItem.estado || "N/A";
+            verEquiposConectados.textContent = dbItem.equipos_conectados || "N/A";
+            verIdPunto.textContent = dbItem.id_punto_codigo || "N/A";
+            verPatchPanel.textContent = dbItem.patch_panel || "N/A";
+            verSwitch.textContent = dbItem.switch_asociado || "N/A";
+            verCentroCableado.textContent = dbItem.centro_cableado || "N/A";
+            verObservaciones.textContent = dbItem.observaciones || "N/A";
+        }
+
+        modalVerPunto.style.display = "flex";
+    });
+});
+
+
+// =============================
+// EDITAR PUNTO
+// =============================
+btnEditarInfo.addEventListener("click", () => {
+
+    const dbItem = window.PUNTOS_DB.find(x => x.id_punto === Number(idPuntoRealInput.value));
+
+    usuarioPuestoInput.value = dbItem?.usuario || "";
+    nombrePuestoInput.value = dbItem?.puesto || "";
+    estadoPuntoSelect.value = dbItem?.estado || "activo";
+    idPuntoInput.value = dbItem?.id_punto_codigo || "";
+    patchPanelInput.value = dbItem?.patch_panel || "";
+    switchInput.value = dbItem?.switch_asociado || "";
+    centroCableadoInput.value = dbItem?.centro_cableado || "";
+    observacionesTextarea.value = dbItem?.observaciones || "";
+
+    // Equipos
+    const equipos = dbItem?.equipos_conectados?.split(", ") || [];
+    multiselectCheckboxes.forEach(cb => cb.checked = equipos.includes(cb.value));
+    updateMultiselectText();
+
+    modalVerPunto.style.display = "none";
+    modalEditarPunto.style.display = "flex";
+});
+
+
+// =============================
+// GUARDAR (INSERT / UPDATE)
+// =============================
+guardarPuntoBtn.addEventListener("click", async () => {
+
+    const equiposSeleccionados = Array.from(multiselectCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value)
+        .join(", ");
+
+    const idReal = idPuntoRealInput.value;
+
+    const datos = {
+        accion: idReal ? "UPDATE" : "INSERT",
+        id_punto: idReal || null,
+        id_punto_codigo: puntoActual.id,
+        usuario: usuarioPuestoInput.value,
+        puesto: nombrePuestoInput.value,
+        estado: estadoPuntoSelect.value,
+        equipos_conectados: equiposSeleccionados,
+        patch_panel: patchPanelInput.value,
+        switch_asociado: switchInput.value,
+        centro_cableado: centroCableadoInput.value,
+        observaciones: observacionesTextarea.value,
+        id_zona: 14 // ZONA = PROYECCIÓN SOCIAL
+    };
+
+    const resp = await fetch("../php/procesar_datos.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify([datos])
+    });
+
+    const json = await resp.json();
+
+    if (json.success) {
+        alert("Guardado correctamente en BD");
+        modalEditarPunto.style.display = "none";
+        cargarDatosDesdeBD();
+    } else {
+        alert("Error: " + json.message);
+    }
+});
+
+
+// =============================
+// ELIMINAR
+// =============================
+eliminarPuntoBtn.addEventListener("click", async () => {
+    const idReal = idPuntoRealInput.value;
+
+    if (!idReal) {
+        alert("Este punto aún no está en la BD.");
+        return;
+    }
+
+    if (!confirm("¿Eliminar este punto permanentemente?")) return;
+
+    const data = [{ accion: "DELETE", id_punto: idReal }];
+
+    const resp = await fetch("../php/procesar_datos.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const json = await resp.json();
+
+    if (json.success) {
+        alert("Punto eliminado correctamente");
+
+        // 1. Resetear datos visibles en el modal
+        verUsuarioPuesto.textContent = "";
+        verNombrePuesto.textContent = "";
+        verEstadoPunto.textContent = "";
+        verEquiposConectados.textContent = "";
+        verIdPunto.textContent = "";
+        verPatchPanel.textContent = "";
+        verSwitch.textContent = "";
+        verCentroCableado.textContent = "";
+        verObservaciones.textContent = "";
+
+        // 2. Resetear el icono visual a estado por defecto
+        puntoActual.classList.remove("activo", "inactivo");
+        puntoActual.classList.add("activo");
+
+        // 3. Borrar referencia interna del punto editado
+        puntoActual = null;
+
+        // 4. Cerrar el modal
+        modalEditarPunto.style.display = "none";
+
+        cargarDatosDesdeBD();
+    } else {
+        alert("Error: " + json.message);
+    }
+});
+
+
+// =============================
+// CERRAR MODALES
+// =============================
+cerrarVerBtn.onclick = () => modalVerPunto.style.display = "none";
+cerrarVerBtn2.onclick = () => modalVerPunto.style.display = "none";
+cerrarPuntoBtn.onclick = () => modalEditarPunto.style.display = "none";
+cerrarPuntoBtn2.onclick = () => modalEditarPunto.style.display = "none";
+
+
+// =============================
+// INICIO
+// =============================
+document.addEventListener("DOMContentLoaded", cargarEstadoInicial);
+
+
+  </script>
+</body>
+</html>
