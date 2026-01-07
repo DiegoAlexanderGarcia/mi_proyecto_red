@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficinas Edificio De Prosgrados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/edificideposgrados.css">
+</head>
+
+<body>
+    <h1>EDIFICIO DE POSGRADOS</h1>
+
+    <div class="mapa">
+
+        <a href="../index.html" class="puerta-plano puerta-1">
+            <div class="marco"></div>
+            <div class="arco"></div>
+        </a>
+        <h1 id="titulo-1"> TERCER PISO 5301</h1>
+        <h1 id="titulo-2"> SALIDA</h1>
+
+
+        <div class="punto-container" id="punto-switch-01" style="top:150px; left:60px;">
+
+
+            <div class="switch-red" data-info="Switch de Red">
+                <div class="puerto"></div>
+                <div class="puerto"></div>
+                <div class="puerto"></div>
+                <div class="puerto"></div>
+            </div>
+        </div>
+
+        <div id="modal-ver-punto" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="titulo-ver-punto">Información del Switch</h2>
+                    <span class="close-btn" id="cerrar-ver">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
+                    <div class="info-item">
+                        <i class="fa-solid fa-tag info-icon"></i>
+                        <span class="info-label">Nombre:</span>
+                        <span class="info-value" id="ver-switch-nombre"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-location-dot info-icon"></i>
+                        <span class="info-label">Ubicación:</span>
+                        <span class="info-value" id="ver-switch-ubicacion"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-barcode info-icon"></i>
+                        <span class="info-label">No. de Serie:</span>
+                        <span class="info-value" id="ver-switch-serie"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-wifi info-icon"></i>
+                        <span class="info-label">MAC:</span>
+                        <span class="info-value" id="ver-switch-mac"></span>
+                    </div>
+
+                <div class="modal-footer">
+                    <button class="btn" id="cerrar-ver-btn">CERRAR</button>
+                    <button class="btn" id="btn-editar-info">EDITAR</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="modal-editar-punto" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="titulo-punto">EDITAR SWITCH DE RED</h2>
+                    <span class="close-btn" id="cerrar-punto">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="form-switch">
+                        <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
+                        <label for="switch-nombre">NOMBRE </label>
+                        <input type="text" id="switch-nombre" placeholder="Ej: SW-PISO3-ARM-01">
+
+                        <label for="switch-ubicacion">UBICACIÓN</label>
+                        <input type="text" id="switch-ubicacion" placeholder="Ej: Piso 3, Armario 2">
+
+                        <label for="switch-serie">NÚMERO DE SERIE</label>
+                        <input type="text" id="switch-serie" placeholder="Ej: XYZ-123456789">
+
+                        <label for="switch-mac">DIRECCIÓN MAC</label>
+                        <input type="text" id="switch-mac" placeholder="Ej: 00:1A:2B:3C:4D:5E">
+
+                        <hr style="margin: 15px 0;">
+
+                        <div class="modal-footer">
+                    <button class="btn btn-eliminar" id="eliminar-punto">ELIMINAR SWITCH</button>
+                    <div>
+                        <button class="btn" id="cerrar-punto-btn">CERRAR</button>
+                        <button class="btn" id="guardar-punto">GUARDAR</button>
+                    </div>
+
+                        </div>
+                    </form>
+                </div>
+                
+                </div>
+            </div>
+        </div>
+        <script src="../js/edificiodeposgrados.js"></script>
+</body>
+
+</html>
