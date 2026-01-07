@@ -4,9 +4,8 @@
 const NUM_PUERTOS = 30;
 const empty = 'N/A';
 
-let puertoSeleccionado = null; // número 1..30
 let switchSeleccionado = null; // switchId actual (switch-1-data o switch-2-data)
-
+window.SWITCHES_DB = [];
 
 // Elementos DOM de los modales (solo se buscan una vez)
 const modalFondo = document.getElementById('modalFondo');
@@ -18,7 +17,6 @@ const cerrarEditarBtn = document.getElementById('cerrarEditarBtn');
 const cerrarEditarX = document.getElementById('cerrarEditarX');
 const formEditar = document.getElementById('formEditar');
 const eliminarBtn = document.getElementById('eliminarBtn');
-const borrarPuertoBtn = document.getElementById("borrarPuertoBtn");
 
 // Elementos de información en el modal de vista (se rellenan dinámicamente)
 const tituloModal = document.getElementById('titulo');
@@ -28,7 +26,6 @@ const serieInfo = document.getElementById('serieInfo');
 const macInfo = document.getElementById('macInfo');
 const contenedorPuertos = document.getElementById('contenedorPuertos'); // Contenedor en Modal EDITAR
 const puertosVistaContenedor = document.getElementById('puertos-vista-contenedor');
-
 
 // Campos generales del formulario de edición (se rellenan dinámicamente)
 const switchNombre = document.getElementById('switchNombre');
@@ -61,13 +58,35 @@ function cargarDatos(switchId) {
     return savedData ? JSON.parse(savedData) : getDefaultData();
 }
 
+async function cargarSwitchesDesdeBD(idZona) {
+    try {
+        const resp = await fetch(`../php/obtener_switch.php?id_zona=${idZona}`);
+        const json = await resp.json();
+
+        if (!json?.success) {
+            console.error("Error al cargar switches:", json?.message || "desconocido");
+            window.SWITCHES_DB = [];
+            return;
+        }
+
+        window.SWITCHES_DB = json.data || [];
+    } catch (e) {
+        console.error("Error al cargar switches:", e);
+        window.SWITCHES_DB = [];
+    }
+}
+
+function getSwitchBD(codigoSwitch) {
+    return (window.SWITCHES_DB || []).find(x => x.codigo_switch === codigoSwitch) || null;
+}
+
 /**
  * Rellena el Modal de Vista con los datos actuales, usando una TABLA para puertos.
  * ESTA ES LA FUNCIÓN MODIFICADA PARA MOSTRAR TABLA.
  */
 function actualizarVista(switchId, data) {
 
-        if (!data) {
+    if (!data) {
         console.warn("actualizarVista recibió data undefined. switchId:", switchId);
         data = getDefaultData();
     }
@@ -87,68 +106,12 @@ function actualizarVista(switchId, data) {
     serieInfo.style.display = 'flex';
     macInfo.style.display = 'flex';
 
-    // 2. Generar la TABLA para la VISTA de Puertos
-    puertosVistaContenedor.innerHTML = ''; // Limpiar el contenedor
-
-    // Contenedor para aplicar estilos de scroll
-    const tablaContenedor = document.createElement('div');
-    tablaContenedor.className = 'tabla-contenedor';
-
-    const tabla = document.createElement('table');
-    tabla.id = 'tablaPuertos';
-    tabla.innerHTML = `
-            <thead>
-                    <tr>
-                        <th>Puerto</th>
-                        <th>NOMBRE</th>
-                        <th>LOCALIZACIÓN</th>
-                        <th>Observaciones</th>
-                        <th>Select</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-    `;
-
-    const tbody = tabla.querySelector('tbody');
-
-    // Rellenar la tabla con los 30 puertos
-    for (let i = 1; i <= NUM_PUERTOS; i++) {
-        const pData = data.puertos[`puerto${i}`];
-
-        const fila = document.createElement('tr');
-            fila.innerHTML = `
-            <td>Punto ${i}</td>
-            <td>${pData.nombre || empty}</td>
-            <td>${pData.localizacion || empty}</td>
-            <td>${pData.obs || empty}</td>
-            <td>
-                <button class="btn btn-yellow btn-select-puerto" data-puerto="${i}">
-                Select
-                </button>
-            </td>
-            `;
-
-        tbody.appendChild(fila);
+    // 2) NO mostrar tabla de puertos en el modal de vista
+    if (puertosVistaContenedor) {
+        puertosVistaContenedor.innerHTML = ""; // deja limpio
+        puertosVistaContenedor.style.display = "none"; // opcional: oculta el espacio
     }
-
-    tablaContenedor.appendChild(tabla);
-    puertosVistaContenedor.appendChild(tablaContenedor);
-    // Eventos Select
-    puertosVistaContenedor.querySelectorAll(".btn-select-puerto").forEach(btn => {
-    btn.addEventListener("click", () => {
-        puertoSeleccionado = Number(btn.dataset.puerto);
-
-        // resaltado visual opcional
-        puertosVistaContenedor.querySelectorAll("tr").forEach(tr => tr.classList.remove("fila-seleccionada"));
-        btn.closest("tr").classList.add("fila-seleccionada");
-
-        alert(`✅ Puerto seleccionado: ${puertoSeleccionado}`);
-    });
-    });
-
 }
-
 
 /**
  * Rellena el Modal de Edición con los datos para editar
@@ -165,29 +128,11 @@ function cargarDatosEditar(switchId) {
     switchUbicacion.value = data.switchUbicacion === 'N/A' ? '' : data.switchUbicacion;
     serie.value = data.serie === 'N/A' ? '' : data.serie;
     mac.value = data.mac === 'N/A' ? '' : data.mac;
-
-    // Datos de los 30 puertos (Rellenar los campos existentes en el HTML)
-    for (let i = 1; i <= NUM_PUERTOS; i++) {
-        const pData = data.puertos[`puerto${i}`];
-
-        // Se buscan los IDs que están fijos en el HTML
-        const inputNombre = document.getElementById(`nombre-${i}`);
-        const inputLocalizacion = document.getElementById(`localizacion-${i}`);
-        const textareaObs = document.getElementById(`obs-${i}`);
-
-        // Los IDs están garantizados porque los pusimos en el HTML
-        if (inputNombre) inputNombre.value = pData.nombre === 'N/A' ? '' : pData.nombre;
-        if (inputLocalizacion) inputLocalizacion.value = pData.localizacion === 'N/A' ? '' : pData.localizacion;
-        if (textareaObs) textareaObs.value = pData.obs === 'N/A' ? '' : pData.obs;
-    }
 }
-
 
 // ===================================
 // FUNCIONALIDAD DE DETALLE DE PUERTO 
 // ===================================
-
-
 
 // Función para cerrar el Modal de Vista y restaurar la vista completa (la tabla)
 function cerrarModalVista(switchId) {
@@ -199,7 +144,6 @@ function cerrarModalVista(switchId) {
     modalFondo.style.display = 'none';
 }
 
-
 // ===================================
 // 3. FUNCIÓN PRINCIPAL DE CONFIGURACIÓN
 // ===================================
@@ -208,22 +152,78 @@ function cerrarModalVista(switchId) {
  * Configura los eventos para un icono de switch específico.
  */
 function setupSwitch(iconoServidor) {
+
+    editarBtn.onclick = () => {
+        if (!switchSeleccionado) return alert("Abre un switch primero.");
+        cargarDatosEditar(switchSeleccionado);
+        modalFondo.style.display = 'none';
+        modalEditar.style.display = 'flex';
+    };
+
+    eliminarBtn.onclick = async () => {
+        if (!switchSeleccionado) return alert("Abre un switch primero.");
+
+        const data = cargarDatos(switchSeleccionado);
+        if (!confirm(`¿Eliminar el switch "${data.switchNombre || 'N/A'}"?`)) return;
+
+        const ID_ZONA = 18; // o el que corresponda en esa página
+        const DB_ID_KEY = `${switchSeleccionado}-dbid`;
+        const dbid = localStorage.getItem(DB_ID_KEY);
+
+        // 1) borrar en BD si existe
+        if (dbid) {
+            const json = await eliminarSwitchBD(Number(dbid));
+            if (!json.success) return alert("Error eliminando en BD");
+        }
+
+        // 2) borrar localStorage
+        localStorage.removeItem(switchSeleccionado);
+        localStorage.removeItem(DB_ID_KEY);
+
+        // 3) refrescar el modal con datos vacíos
+        actualizarVista(switchSeleccionado, getDefaultData());
+
+        // opcional: cerrar modal
+        modalFondo.style.display = 'none';
+
+        alert("✅ Switch eliminado.");
+    };
+
+    // Asignar el cierre con el switchId para restaurar la vista completa
+    cerrarBtn.addEventListener('click', () => cerrarModalVista(switchId));
+    cerrarX.addEventListener('click', () => cerrarModalVista(switchId));
+
     const switchId = iconoServidor.dataset.switchId;
+    actualizarVista(switchId, cargarDatos(switchId));
 
     const ID_ZONA = 18; // SISTEMAS
     const DB_ID_KEY = `${switchId}-dbid`; // guarda el id_switch de la BD
-
+    const swBDInit = getSwitchBD(switchId);
+    if (swBDInit?.id_switch) {
+        localStorage.setItem(DB_ID_KEY, String(swBDInit.id_switch));
+    } else {
+        localStorage.removeItem(DB_ID_KEY);
+    }
 
     // Abrir Modal de Vista (clic en el ícono del servidor)
-    iconoServidor.addEventListener('click', () => {
-        switchSeleccionado = switchId;   // ✅ AÑADIR
-        puertoSeleccionado = null;       // ✅ AÑADIR (resetea selección)
+    iconoServidor.addEventListener("click", () => {
+        switchSeleccionado = switchId;
 
-    actualizarVista(switchId, cargarDatos(switchId));
-    modalFondo.style.display = 'flex';
+        const swBD = getSwitchBD(switchId);
+
+        // si existe en BD, úsalo; si no, usa localStorage
+        const data = swBD
+            ? {
+                switchNombre: swBD.nombre,
+                switchUbicacion: swBD.ubicacion,
+                serie: swBD.numero_serie,   // ojo nombre de columna
+                mac: swBD.mac
+            }
+            : cargarDatos(switchId);
+
+        actualizarVista(switchId, data);
+        modalFondo.style.display = "flex";
     });
-
-
 
     // Abrir Modal de Edición (Desde el modal de vista)
     editarBtn.onclick = () => {
@@ -232,10 +232,7 @@ function setupSwitch(iconoServidor) {
         modalEditar.style.display = 'flex';
     };
 
-
-
-
-    // 💾 Guardar datos (Submit del formulario)
+    // Guardar datos (Submit del formulario)
     formEditar.onsubmit = async (e) => {
         e.preventDefault();
 
@@ -244,38 +241,21 @@ function setupSwitch(iconoServidor) {
             switchNombre: switchNombre.value.trim() || 'Sin Asignar',
             switchUbicacion: switchUbicacion.value.trim() || 'N/A',
             serie: serie.value.trim() || 'N/A',
-            mac: mac.value.trim() || 'N/A',
-            puertos: {}
+            mac: mac.value.trim() || 'N/A'
         };
 
         // 2) Puertos (30)
-        const puertosArr = [];
-        for (let i = 1; i <= NUM_PUERTOS; i++) {
-            const nombreVal = document.getElementById(`nombre-${i}`).value.trim() || 'N/A';
-            const locVal = document.getElementById(`localizacion-${i}`).value.trim() || 'N/A';
-            const obsVal = document.getElementById(`obs-${i}`).value.trim() || 'N/A';
-
-            dataToSave.puertos[`puerto${i}`] = { nombre: nombreVal, localizacion: locVal, obs: obsVal };
-
-            // formato para BD
-            puertosArr.push({
-                numero: i,
-                nombre: nombreVal,
-                localizacion: locVal,
-                observaciones: obsVal
-            });
-        }
 
         // 3) Guardar en BD
         const id_switch_bd = localStorage.getItem(DB_ID_KEY);
         const payload = {
-            id_switch: id_switch_bd ? Number(id_switch_bd) : null, // si existe -> update
+            id_switch: id_switch_bd ? Number(id_switch_bd) : null,
             nombre: dataToSave.switchNombre,
             ubicacion: dataToSave.switchUbicacion,
-            serie: dataToSave.serie,
+            numero_serie: dataToSave.serie,
             mac: dataToSave.mac,
             id_zona: ID_ZONA,
-            puertos: puertosArr
+            codigo_switch: switchId
         };
 
         const json = await guardarSwitchEnBD(payload);
@@ -290,104 +270,57 @@ function setupSwitch(iconoServidor) {
         localStorage.setItem(DB_ID_KEY, String(json.id_switch));
 
         // 5) Refrescar UI
-        actualizarVista(switchId, dataToSave);
-
+        actualizarVista(switchId, cargarDatos(switchId));
 
         modalEditar.style.display = 'none';
         modalFondo.style.display = 'flex';
         alert(`✅ Switch guardado (BD id=${json.id_switch})`);
     };
 
-    borrarPuertoBtn.onclick = async () => {
-    if (!switchSeleccionado || switchSeleccionado !== switchId) {
-        alert("Abre un switch primero.");
-        return;
-    }
-
-    if (!puertoSeleccionado) {
-        alert("Primero selecciona un puerto con SELECT.");
-        return;
-    }
-
-    const confirmar = confirm(`¿Borrar el puerto ${puertoSeleccionado}?`);
-    if (!confirmar) return;
-
-    // 1) borrar en BD si el switch ya existe en BD
-    const dbKey = `${switchId}-dbid`;
-    const dbid = localStorage.getItem(dbKey);
-
-    if (dbid) {
-        const json = await eliminarPuertoBD(Number(dbid), puertoSeleccionado);
-        if (!json.success) {
-        alert("Error borrando puerto en BD: " + (json.message || "desconocido"));
-        return;
-        }
-    }
-
-    // 2) borrar en localStorage (poner en N/A)
-    const data = cargarDatos(switchId);
-    data.puertos[`puerto${puertoSeleccionado}`] = { nombre: "N/A", localizacion: "N/A", obs: "N/A" };
-    localStorage.setItem(switchId, JSON.stringify(data));
-
-    // 3) refrescar vista
-    actualizarVista(switchId, data);
-
-    alert(`✅ Puerto ${puertoSeleccionado} borrado.`);
-    };
-
-
-
-    // 🗑️ Eliminar datos (Botón ELIMINAR SWITCH)
+    // Eliminar datos (Botón ELIMINAR SWITCH)
     eliminarBtn.onclick = async () => {
         const data = cargarDatos(switchId);
-        const confirmar = confirm(`¿Eliminar el switch "${data.switchNombre || 'N/A'}" y todos sus puertos?`);
-
+        const confirmar = confirm(`¿Eliminar el switch "${data.switchNombre || 'N/A'}"?`);
         if (!confirmar) return;
 
+        const DB_ID_KEY = `${switchId}-dbid`;
         const dbid = localStorage.getItem(DB_ID_KEY);
 
-        // 1) borrar en BD si existe
+        // borrar en BD
         if (dbid) {
             const json = await eliminarSwitchBD(Number(dbid));
             if (!json.success) {
-                alert("Error eliminando en BD: " + (json.message || "desconocido"));
+                alert("Error eliminando en BD");
                 return;
             }
         }
 
-        // 2) borrar en localStorage
+        // borrar localStorage
         localStorage.removeItem(switchId);
         localStorage.removeItem(DB_ID_KEY);
 
-        // 3) refrescar UI
-        const emptyData = getDefaultData();
-        actualizarVista(switchId, emptyData);
-        cargarDatosEditar(switchId);
+        actualizarVista(switchId, getDefaultData());
 
         modalEditar.style.display = 'none';
-        modalFondo.style.display = 'flex';
+        modalFondo.style.display = 'none';
 
         alert("✅ Switch eliminado.");
     };
-
-
-    // Asignar el cierre con el switchId para restaurar la vista completa
-    cerrarBtn.addEventListener('click', () => cerrarModalVista(switchId));
-    cerrarX.addEventListener('click', () => cerrarModalVista(switchId));
 }
-
 
 // ===================================
 // 4. INICIALIZACIÓN
 // ===================================
 
 // Cierres de Modal de Edición
-cerrarEditarBtn.addEventListener('click', () => modalEditar.style.display = 'none');
+if (cerrarEditarBtn) {
+    cerrarEditarBtn.addEventListener('click', () => modalEditar.style.display = 'none');
+}
+
 cerrarEditarX.addEventListener('click', () => modalEditar.style.display = 'none');
 
-
 document.addEventListener("DOMContentLoaded", () => {
-    // 🚀 Configurar CADA SWITCH EN LA PÁGINA
+    // Configurar CADA SWITCH EN LA PÁGINA
     // Importante: Asegúrate de que tus iconos de switch tienen la clase .fa-server y el atributo data-switch-id="[ID_UNICO]"
     const todosLosIconos = document.querySelectorAll('.fa-server[data-switch-id]');
 
@@ -395,10 +328,12 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("No se encontraron elementos con la clase '.fa-server' y el atributo 'data-switch-id'. Asegúrate de tener switches definidos en tu HTML.");
     }
 
-    todosLosIconos.forEach(icono => {
-        // Inicializar el manejo de eventos para cada switch
-        setupSwitch(icono);
-    });
+    (async () => {
+        await cargarSwitchesDesdeBD(18);
+        todosLosIconos.forEach(icono => {
+            setupSwitch(icono);
+        });
+    })();
 });
 
 // =============================

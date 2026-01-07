@@ -1,46 +1,16 @@
 <?php
-// obtener_puntos.php
+require "conexion.php";
 
-header('Content-Type: application/json');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+$id_zona = isset($_GET["id_zona"]) ? intval($_GET["id_zona"]) : 0;
 
-function json_error($message) {
-    echo json_encode(['success' => false, 'message' => $message]);
-    exit;
-}
+$stmt = $pdo->prepare("
+    SELECT pr.*,
+            s.nombre AS switch_nombre,
+            s.codigo_switch AS switch_codigo
+    FROM punto_red pr
+    LEFT JOIN `switch` s ON s.id_switch = pr.id_switch
+    WHERE pr.id_zona = ?
+");
+$stmt->execute([$id_zona]);
 
-try {
-    require_once 'conexion.php';
-} catch (Exception $e) {
-    json_error('Error al incluir la conexión: ' . $e->getMessage());
-}
-
-$sql = "SELECT 
-    id_punto, 
-    id_punto_codigo, 
-    usuario, 
-    puesto, 
-    estado, 
-    equipos_conectados, 
-    patch_panel, 
-    switch_asociado, 
-    centro_cableado, 
-    observaciones, 
-    id_zona
-FROM punto_red
-ORDER BY id_punto DESC";
-
-try {
-    $stmt = $pdo->query($sql);
-    $puntos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    echo json_encode([
-        'success' => true,
-        'data' => $puntos
-    ]);
-
-} catch (PDOException $e) {
-    json_error("Error al ejecutar SELECT: " . $e->getMessage());
-}
-?>
+echo json_encode(["success" => true, "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)]);

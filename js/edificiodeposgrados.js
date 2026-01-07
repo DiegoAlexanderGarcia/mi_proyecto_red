@@ -19,8 +19,8 @@ const verSwitchNombre = document.getElementById("ver-switch-nombre");
 const verSwitchUbicacion = document.getElementById("ver-switch-ubicacion");
 const verSwitchSerie = document.getElementById("ver-switch-serie");
 const verSwitchMac = document.getElementById("ver-switch-mac");
-const tablaPuertosVer = document.getElementById("tabla-puertos-ver");
-const tituloVerPunto = document.getElementById('titulo-ver-punto');
+const tituloVerPunto = document.getElementById("titulo-ver-punto");
+
 
 // Elementos de la vista de Editar (Información del Switch)
 const switchNombreInput = document.getElementById("switch-nombre");
@@ -40,6 +40,21 @@ let puntoActual = null;
 /* ================================== */
 /* === FUNCIÓN CARGAR SWITCHES === */
 /* ================================== */
+
+
+let SWITCHES = [];
+
+async function cargarSwitchesZona(idZona) {
+    const r = await fetch(`../php/obtener_switch.php?id_zona=${idZona}`);
+    const j = await r.json();
+    SWITCHES = j.data || [];
+
+    const select = document.getElementById("switch-id");
+    select.innerHTML = `<option value="">(Sin switch)</option>` +
+        SWITCHES.map(s => `<option value="${s.id_switch}">${s.nombre}</option>`).join("");
+}
+
+
 
 async function cargarSwitchDesdeBD() {
     try {
@@ -64,89 +79,39 @@ async function cargarSwitchDesdeBD() {
 /* === FUNCIÓN PARA ABRIR MODAL VER (LEER) === */
 /* ================================== */
 function abrirModalVer(elemento) {
+    const codigo = elemento.id; // "punto-switch-01"
+
+    // buscar en BD por codigo_switch
+    const sw = window.SWITCHES_DB.find(x => x.codigo_switch === codigo) || null;
+
     puntoActual = elemento;
 
-    const swBD = window.SWITCHES_DB?.[0] || null;
-
-    // 1) Si hay switch en BD: úsalo
-    if (swBD) {
-        puntoActual.dataset.idSwitch = swBD.id_switch;
-
-        verSwitchNombre.textContent = swBD.nombre || "Sin asignar";
-        verSwitchUbicacion.textContent = swBD.ubicacion || "N/A";
-        verSwitchSerie.textContent = swBD.serie || "N/A";
-        verSwitchMac.textContent = swBD.mac || "N/A";
-
-        let html = `
-            <table class="tabla-puertos">
-                <thead>
-                    <tr>
-                        <th>Puerto</th>
-                        <th>Nombre</th>
-                        <th>Localización</th>
-                        <th>Observaciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        for (let i = 1; i <= 30; i++) {
-            const p = swBD.puertos?.find(x => Number(x.numero) === i) || {};
-            html += `
-                <tr>
-                    <td>Punto ${i}</td>
-                    <td>${p.nombre || "N/A"}</td>
-                    <td>${p.localizacion || "N/A"}</td>
-                    <td>${p.observaciones || "N/A"}</td>
-                </tr>
-            `;
-        }
-
-        html += "</tbody></table>";
-        tablaPuertosVer.innerHTML = html;
-        modalVerPunto.style.display = "flex";
-        return;
+    // si existe en BD, guardo id_switch en dataset
+    if (sw) {
+        puntoActual.dataset.idSwitch = sw.id_switch;
+    } else {
+        delete puntoActual.dataset.idSwitch; // es NUEVO
     }
 
-    // 2) Si NO hay switch en BD: usa localStorage
-    const ls = JSON.parse(localStorage.getItem(puntoActual.id)) || null;
-
-    verSwitchNombre.textContent = ls?.nombre || "Sin asignar";
-    verSwitchUbicacion.textContent = ls?.ubicacion || "N/A";
-    verSwitchSerie.textContent = ls?.serie || "N/A";
-    verSwitchMac.textContent = ls?.mac || "N/A";
-
-    let html = `
-        <table class="tabla-puertos">
-            <thead>
-                <tr>
-                    <th>Puerto</th>
-                    <th>Nombre</th>
-                    <th>Localización</th>
-                    <th>Observaciones</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-    for (let i = 1; i <= 30; i++) {
-        const p = ls?.puertos?.find(x => Number(x.numero) === i) || {};
-        html += `
-            <tr>
-                <td>Punto ${i}</td>
-                <td>${p.nombre || "N/A"}</td>
-                <td>${p.localizacion || "N/A"}</td>
-                <td>${p.observaciones || "N/A"}</td>
-            </tr>
-        `;
+    // ✅ Mensaje en el título (y datos por defecto)
+    if (!sw) {
+        tituloVerPunto.textContent = "Información del Switch (NO registrado en BD)";
+        verSwitchNombre.textContent = "Sin asignar";
+        verSwitchUbicacion.textContent = "N/A";
+        verSwitchSerie.textContent = "N/A";
+        verSwitchMac.textContent = "N/A";
+    } else {
+        tituloVerPunto.textContent = "Información del Switch";
+        verSwitchNombre.textContent = sw.nombre || "Sin asignar";
+        verSwitchUbicacion.textContent = sw.ubicacion || "N/A";
+        verSwitchSerie.textContent = sw.numero_serie || "N/A";
+        verSwitchMac.textContent = sw.mac || "N/A";
     }
 
-    html += "</tbody></table>";
-    tablaPuertosVer.innerHTML = html;
-
-    // NO alert, solo mostramos modal
+    // abrir modal SIEMPRE
     modalVerPunto.style.display = "flex";
 }
+
 
 
 /* ==================================== */
@@ -155,62 +120,40 @@ function abrirModalVer(elemento) {
 function abrirModalEditar() {
     if (!puntoActual) return;
 
-    const sw = window.SWITCHES_DB?.[0] || null;
+    const codigo = puntoActual.id;
+    const sw = window.SWITCHES_DB.find(x => x.codigo_switch === codigo) || null;
 
-    // si hay switch en BD, úsalo; si no, usa localStorage
-    const datosGuardados = sw ? {
-        nombre: sw.nombre,
-        ubicacion: sw.ubicacion,
-        serie: sw.serie,
-        mac: sw.mac,
-        puertos: sw.puertos
-    } : (JSON.parse(localStorage.getItem(puntoActual.id)) || {});
-
-    // 3. Rellenar campos de Puertos (Se asume que los 30 IDs existen en el HTML)
-    const puertos = datosGuardados.puertos || [];
-
-    for (let i = 1; i <= NUM_PUERTOS; i++) {
-        const p = Array.isArray(datosGuardados.puertos)
-            ? (datosGuardados.puertos.find(x => Number(x.numero) === i) || {})
-            : {};
-
-        // Asignar valores a los campos de cada puerto usando sus IDs
-        const nombreInput = document.getElementById(`nombre-punto-${i}`);
-        const localizacionInput = document.getElementById(`localizacion-punto-${i}`);
-        const obsTextarea = document.getElementById(`observaciones-punto-${i}`);
-
-        if (nombreInput) nombreInput.value = p.nombre || "";
-        if (localizacionInput) localizacionInput.value = p.localizacion || "";
-        if (obsTextarea) obsTextarea.value = p.observaciones || "";
+    if (sw) {
+        // existe en BD: precarga datos
+        switchNombreInput.value = sw.nombre || "";
+        switchUbicacionInput.value = sw.ubicacion || "";
+        switchSerieInput.value = sw.numero_serie || "";
+        switchMacInput.value = sw.mac || "";
+        puntoActual.dataset.idSwitch = sw.id_switch;
+    } else {
+        // NO existe: campos vacíos para capturar info nueva
+        switchNombreInput.value = "";
+        switchUbicacionInput.value = "";
+        switchSerieInput.value = "";
+        switchMacInput.value = "";
+        delete puntoActual.dataset.idSwitch;
     }
 
-    // 4. Actualizar título del modal de editar
-    tituloEditarPunto.textContent = `EDITAR SWITCH: ${datosGuardados.nombre || 'N/A'}`;
+    tituloEditarPunto.textContent = `EDITAR SWITCH: ${codigo}`;
 
     modalVerPunto.style.display = "none";
     modalEditarPunto.style.display = "flex";
 }
 
 
+
 /* ================================= */
 /* === FUNCIÓN PARA GUARDAR DATOS (GLOBAL) === */
 /* ================================= */
 async function guardarDatosSwitch() {
-
     if (!puntoActual) {
         alert("Primero selecciona el switch.");
         return;
-    }
-
-
-    const puertos = [];
-    for (let i = 1; i <= NUM_PUERTOS; i++) {
-        puertos.push({
-            numero: i,
-            nombre: document.getElementById(`nombre-punto-${i}`).value,
-            localizacion: document.getElementById(`localizacion-punto-${i}`).value,
-            observaciones: document.getElementById(`observaciones-punto-${i}`).value
-        });
     }
 
     const idSwitchBD = puntoActual.dataset.idSwitch ? Number(puntoActual.dataset.idSwitch) : null;
@@ -218,14 +161,13 @@ async function guardarDatosSwitch() {
     const data = {
         accion: idSwitchBD ? "UPDATE" : "INSERT",
         id_switch: idSwitchBD,
-        nombre: switchNombreInput.value,
-        ubicacion: switchUbicacionInput.value,
-        serie: switchSerieInput.value,
-        mac: switchMacInput.value,
-        id_zona: 11,
-        puertos
+        codigo_switch: puntoActual.id,          // ✅ clave para encontrarlo después
+        nombre: switchNombreInput.value.trim() || "Sin asignar",
+        ubicacion: switchUbicacionInput.value.trim() || "N/A",
+        numero_serie: switchSerieInput.value.trim() || "N/A",
+        mac: switchMacInput.value.trim() || "N/A",
+        id_zona: 11
     };
-
 
     const resp = await fetch("../php/procesar_switch.php", {
         method: "POST",
@@ -236,22 +178,12 @@ async function guardarDatosSwitch() {
     const json = await resp.json();
 
     if (json.success) {
-
+        // ✅ si fue INSERT, guarda el id nuevo en el dataset
         if (!idSwitchBD && json.id_switch) {
             puntoActual.dataset.idSwitch = json.id_switch;
         }
 
-        localStorage.setItem(
-            puntoActual.id,
-            JSON.stringify({
-                nombre: data.nombre,
-                ubicacion: data.ubicacion,
-                serie: data.serie,
-                mac: data.mac,
-                puertos: data.puertos
-            })
-        );
-
+        // recarga BD y vuelve a abrir el modal ver actualizado
         await cargarSwitchDesdeBD();
         abrirModalVer(puntoActual);
 
@@ -261,6 +193,7 @@ async function guardarDatosSwitch() {
         alert("Error: " + json.message);
     }
 }
+
 
 /* ================================== */
 /* === FUNCIÓN DE CARGA INICIAL Y EVENTOS === */
@@ -356,7 +289,7 @@ function inicializarEventos() {
 /* === EJECUTAR AL CARGAR LA PÁGINA === */
 /* ================================ */
 document.addEventListener("DOMContentLoaded", async () => {
-    await cargarSwitchDesdeBD();
+    await cargarSwitchDesdeBD();  // ✅ espera a que llegue la data
     inicializarEventos();
 });
 
