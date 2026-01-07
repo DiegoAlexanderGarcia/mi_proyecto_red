@@ -5,6 +5,9 @@
 const NUM_PUERTOS = 30; 
 const empty = 'N/A';
 
+// Switch seleccionado actualmente (para que los botones del modal trabajen sobre el switch correcto)
+let currentSwitchId = null;
+
 // Elementos DOM de los modales (solo se buscan una vez)
 const modalFondo = document.getElementById('modalFondo');
 const modalEditar = document.getElementById('modalEditar');
@@ -178,78 +181,14 @@ function cerrarModalVista(switchId) {
  * Configura los eventos para un icono de switch específico.
  */
 function setupSwitch(iconoServidor) {
-    const switchId = iconoServidor.dataset.switchId; 
+    const switchId = iconoServidor.dataset.switchId;
 
     // Abrir Modal de Vista (clic en el ícono del servidor)
     iconoServidor.addEventListener('click', () => {
-        actualizarVista(cargarDatos(switchId)); 
+        currentSwitchId = switchId;
+        actualizarVista(cargarDatos(currentSwitchId));
         modalFondo.style.display = 'flex';
     });
-
-    // Abrir Modal de Edición (Desde el modal de vista)
-    editarBtn.onclick = () => { 
-        cargarDatosEditar(switchId); 
-        modalFondo.style.display = 'none';
-        modalEditar.style.display = 'flex';
-    };
-
-   
-
-
-    // 💾 Guardar datos (Submit del formulario)
-    formEditar.onsubmit = (e) => { 
-        e.preventDefault();
-
-        // 1. Guardar datos generales
-        const dataToSave = {
-            switchNombre: switchNombre.value.trim() || 'Sin Asignar',
-            switchUbicacion: switchUbicacion.value.trim() || 'N/A',
-            serie: serie.value.trim() || 'N/A',
-            mac: mac.value.trim() || 'N/A',
-            puertos: {}
-        };
-
-        // 2. Guardar datos de los 30 puertos (leyendo los campos fijos)
-        for (let i = 1; i <= NUM_PUERTOS; i++) {
-            dataToSave.puertos[`puerto${i}`] = {
-                // Usamos getElementById para leer los campos estáticos
-                nombre: document.getElementById(`nombre-${i}`).value.trim() || 'N/A',
-                localizacion: document.getElementById(`localizacion-${i}`).value.trim() || 'N/A',
-                obs: document.getElementById(`obs-${i}`).value.trim() || 'N/A'
-            };
-        }
-        
-        localStorage.setItem(switchId, JSON.stringify(dataToSave)); 
-        actualizarVista(dataToSave); // Actualiza el modal de vista con la nueva tabla
-
-        modalEditar.style.display = 'none';
-        modalFondo.style.display = 'flex';
-        alert(`¡Información del Switch ${dataToSave.switchNombre} guardada con éxito!`);
-    };
-
-    // 🗑️ Eliminar datos (Botón ELIMINAR SWITCH)
-    eliminarBtn.onclick = () => { 
-        const data = cargarDatos(switchId);
-        const confirmar = confirm(`¿Estás seguro de que quieres ELIMINAR toda la información del Switch: ${data.switchNombre || 'N/A'}?`);
-
-        if (confirmar) {
-            localStorage.removeItem(switchId); 
-            const emptyData = getDefaultData();
-            
-            // Reflejar cambios
-            actualizarVista(emptyData); // Muestra la tabla vacía
-            cargarDatosEditar(switchId); 
-            
-            modalEditar.style.display = 'none';
-            modalFondo.style.display = 'flex'; 
-
-            alert("¡Información del Switch eliminada y restablecida!");
-        }
-    };
-    
-    // Asignar el cierre con el switchId para restaurar la vista completa
-    cerrarBtn.addEventListener('click', () => cerrarModalVista(switchId));
-    cerrarX.addEventListener('click', () => cerrarModalVista(switchId));
 }
 
 
@@ -275,6 +214,68 @@ document.addEventListener("DOMContentLoaded", () => {
         // Inicializar el manejo de eventos para cada switch
         setupSwitch(icono); 
     });
+
+    // ✅ Los botones del modal SON ÚNICOS, así que sus eventos deben asignarse UNA sola vez
+    editarBtn.addEventListener('click', () => {
+        if (!currentSwitchId) return;
+        cargarDatosEditar(currentSwitchId);
+        modalFondo.style.display = 'none';
+        modalEditar.style.display = 'flex';
+    });
+
+    formEditar.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!currentSwitchId) return;
+
+        // 1. Guardar datos generales
+        const dataToSave = {
+            switchNombre: switchNombre.value.trim() || 'Sin Asignar',
+            switchUbicacion: switchUbicacion.value.trim() || 'N/A',
+            serie: serie.value.trim() || 'N/A',
+            mac: mac.value.trim() || 'N/A',
+            puertos: {}
+        };
+
+        // 2. Guardar datos de los 30 puertos (leyendo los campos fijos)
+        for (let i = 1; i <= NUM_PUERTOS; i++) {
+            dataToSave.puertos[`puerto${i}`] = {
+                nombre: document.getElementById(`nombre-${i}`).value.trim() || 'N/A',
+                localizacion: document.getElementById(`localizacion-${i}`).value.trim() || 'N/A',
+                obs: document.getElementById(`obs-${i}`).value.trim() || 'N/A'
+            };
+        }
+
+        localStorage.setItem(currentSwitchId, JSON.stringify(dataToSave));
+        actualizarVista(dataToSave);
+
+        modalEditar.style.display = 'none';
+        modalFondo.style.display = 'flex';
+        alert(`¡Información del Switch ${dataToSave.switchNombre} guardada con éxito!`);
+    });
+
+    eliminarBtn.addEventListener('click', () => {
+        if (!currentSwitchId) return;
+
+        const data = cargarDatos(currentSwitchId);
+        const confirmar = confirm(`¿Estás seguro de que quieres ELIMINAR toda la información del Switch: ${data.switchNombre || 'N/A'}?`);
+
+        if (confirmar) {
+            localStorage.removeItem(currentSwitchId);
+            const emptyData = getDefaultData();
+
+            actualizarVista(emptyData);
+            cargarDatosEditar(currentSwitchId);
+
+            modalEditar.style.display = 'none';
+            modalFondo.style.display = 'flex';
+
+            alert("¡Información del Switch eliminada y restablecida!");
+        }
+    });
+
+    cerrarBtn.addEventListener('click', () => cerrarModalVista(currentSwitchId));
+    cerrarX.addEventListener('click', () => cerrarModalVista(currentSwitchId));
+
 });
 
 document.querySelectorAll(".btn-port-detail").forEach(btn => {

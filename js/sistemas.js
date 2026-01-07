@@ -152,52 +152,15 @@ function cerrarModalVista(switchId) {
  * Configura los eventos para un icono de switch específico.
  */
 function setupSwitch(iconoServidor) {
-
-    editarBtn.onclick = () => {
-        if (!switchSeleccionado) return alert("Abre un switch primero.");
-        cargarDatosEditar(switchSeleccionado);
-        modalFondo.style.display = 'none';
-        modalEditar.style.display = 'flex';
-    };
-
-    eliminarBtn.onclick = async () => {
-        if (!switchSeleccionado) return alert("Abre un switch primero.");
-
-        const data = cargarDatos(switchSeleccionado);
-        if (!confirm(`¿Eliminar el switch "${data.switchNombre || 'N/A'}"?`)) return;
-
-        const ID_ZONA = 18; // o el que corresponda en esa página
-        const DB_ID_KEY = `${switchSeleccionado}-dbid`;
-        const dbid = localStorage.getItem(DB_ID_KEY);
-
-        // 1) borrar en BD si existe
-        if (dbid) {
-            const json = await eliminarSwitchBD(Number(dbid));
-            if (!json.success) return alert("Error eliminando en BD");
-        }
-
-        // 2) borrar localStorage
-        localStorage.removeItem(switchSeleccionado);
-        localStorage.removeItem(DB_ID_KEY);
-
-        // 3) refrescar el modal con datos vacíos
-        actualizarVista(switchSeleccionado, getDefaultData());
-
-        // opcional: cerrar modal
-        modalFondo.style.display = 'none';
-
-        alert("✅ Switch eliminado.");
-    };
-
-    // Asignar el cierre con el switchId para restaurar la vista completa
-    cerrarBtn.addEventListener('click', () => cerrarModalVista(switchId));
-    cerrarX.addEventListener('click', () => cerrarModalVista(switchId));
-
     const switchId = iconoServidor.dataset.switchId;
+
+    // Estado inicial (si hay algo en localStorage)
     actualizarVista(switchId, cargarDatos(switchId));
 
     const ID_ZONA = 18; // SISTEMAS
     const DB_ID_KEY = `${switchId}-dbid`; // guarda el id_switch de la BD
+
+    // Si este switch existe en BD, guarda su id_switch para futuras actualizaciones/eliminaciones
     const swBDInit = getSwitchBD(switchId);
     if (swBDInit?.id_switch) {
         localStorage.setItem(DB_ID_KEY, String(swBDInit.id_switch));
@@ -205,108 +168,28 @@ function setupSwitch(iconoServidor) {
         localStorage.removeItem(DB_ID_KEY);
     }
 
-    // Abrir Modal de Vista (clic en el ícono del servidor)
+    // Abrir Modal de Vista (clic en el ícono del switch)
     iconoServidor.addEventListener("click", () => {
         switchSeleccionado = switchId;
 
         const swBD = getSwitchBD(switchId);
 
-        // si existe en BD, úsalo; si no, usa localStorage
+        // Si existe en BD, úsalo; si no, usa localStorage
         const data = swBD
             ? {
                 switchNombre: swBD.nombre,
                 switchUbicacion: swBD.ubicacion,
-                serie: swBD.numero_serie,   // ojo nombre de columna
-                mac: swBD.mac
+                serie: swBD.numero_serie,
+                mac: swBD.mac,
+                puertos: {} // (no se están usando puertos en esta página)
             }
             : cargarDatos(switchId);
 
         actualizarVista(switchId, data);
         modalFondo.style.display = "flex";
     });
-
-    // Abrir Modal de Edición (Desde el modal de vista)
-    editarBtn.onclick = () => {
-        cargarDatosEditar(switchId);
-        modalFondo.style.display = 'none';
-        modalEditar.style.display = 'flex';
-    };
-
-    // Guardar datos (Submit del formulario)
-    formEditar.onsubmit = async (e) => {
-        e.preventDefault();
-
-        // 1) Datos generales
-        const dataToSave = {
-            switchNombre: switchNombre.value.trim() || 'Sin Asignar',
-            switchUbicacion: switchUbicacion.value.trim() || 'N/A',
-            serie: serie.value.trim() || 'N/A',
-            mac: mac.value.trim() || 'N/A'
-        };
-
-        // 2) Puertos (30)
-
-        // 3) Guardar en BD
-        const id_switch_bd = localStorage.getItem(DB_ID_KEY);
-        const payload = {
-            id_switch: id_switch_bd ? Number(id_switch_bd) : null,
-            nombre: dataToSave.switchNombre,
-            ubicacion: dataToSave.switchUbicacion,
-            numero_serie: dataToSave.serie,
-            mac: dataToSave.mac,
-            id_zona: ID_ZONA,
-            codigo_switch: switchId
-        };
-
-        const json = await guardarSwitchEnBD(payload);
-
-        if (!json.success) {
-            alert("Error al guardar en BD: " + (json.message || "desconocido"));
-            return;
-        }
-
-        // 4) Guardar también en localStorage (Req.1)
-        localStorage.setItem(switchId, JSON.stringify(dataToSave));
-        localStorage.setItem(DB_ID_KEY, String(json.id_switch));
-
-        // 5) Refrescar UI
-        actualizarVista(switchId, cargarDatos(switchId));
-
-        modalEditar.style.display = 'none';
-        modalFondo.style.display = 'flex';
-        alert(`✅ Switch guardado (BD id=${json.id_switch})`);
-    };
-
-    // Eliminar datos (Botón ELIMINAR SWITCH)
-    eliminarBtn.onclick = async () => {
-        const data = cargarDatos(switchId);
-        const confirmar = confirm(`¿Eliminar el switch "${data.switchNombre || 'N/A'}"?`);
-        if (!confirmar) return;
-
-        const DB_ID_KEY = `${switchId}-dbid`;
-        const dbid = localStorage.getItem(DB_ID_KEY);
-
-        // borrar en BD
-        if (dbid) {
-            const json = await eliminarSwitchBD(Number(dbid));
-            if (!json.success) {
-                alert("Error eliminando en BD");
-                return;
-            }
-        }
-
-        // borrar localStorage
-        localStorage.removeItem(switchId);
-        localStorage.removeItem(DB_ID_KEY);
-
-        actualizarVista(switchId, getDefaultData());
-
-        modalEditar.style.display = 'none';
-        modalFondo.style.display = 'none';
-
-        alert("✅ Switch eliminado.");
-    };
 }
+
 
 // ===================================
 // 4. INICIALIZACIÓN
@@ -332,6 +215,89 @@ document.addEventListener("DOMContentLoaded", () => {
         await cargarSwitchesDesdeBD(18);
         todosLosIconos.forEach(icono => {
             setupSwitch(icono);
+        });
+
+        // ✅ Eventos de botones del modal: asignar UNA sola vez
+        editarBtn.addEventListener('click', () => {
+            if (!switchSeleccionado) return alert("Abre un switch primero.");
+            cargarDatosEditar(switchSeleccionado);
+            modalFondo.style.display = 'none';
+            modalEditar.style.display = 'flex';
+        });
+
+        cerrarBtn.addEventListener('click', () => cerrarModalVista(switchSeleccionado));
+        cerrarX.addEventListener('click', () => cerrarModalVista(switchSeleccionado));
+
+        eliminarBtn.addEventListener('click', async () => {
+            if (!switchSeleccionado) return alert("Abre un switch primero.");
+
+            const data = cargarDatos(switchSeleccionado);
+            if (!confirm(`¿Eliminar el switch "${data.switchNombre || 'N/A'}"?`)) return;
+
+            const DB_ID_KEY = `${switchSeleccionado}-dbid`;
+            const dbid = localStorage.getItem(DB_ID_KEY);
+
+            // 1) borrar en BD si existe
+            if (dbid) {
+                const json = await eliminarSwitchBD(Number(dbid));
+                if (!json.success) return alert("Error eliminando en BD");
+            }
+
+            // 2) borrar localStorage
+            localStorage.removeItem(switchSeleccionado);
+            localStorage.removeItem(DB_ID_KEY);
+
+            // 3) refrescar el modal con datos vacíos
+            actualizarVista(switchSeleccionado, getDefaultData());
+
+            // cerrar modal
+            modalFondo.style.display = 'none';
+
+            alert("✅ Switch eliminado.");
+        });
+
+        formEditar.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!switchSeleccionado) return alert("Abre un switch primero.");
+
+            const ID_ZONA = 18;
+            const DB_ID_KEY = `${switchSeleccionado}-dbid`;
+
+            const payload = {
+                accion: "guardar",
+                id_switch: localStorage.getItem(DB_ID_KEY) || null,
+                codigo_switch: switchSeleccionado,
+                nombre: switchNombre.value.trim() || "Sin Asignar",
+                ubicacion: switchUbicacion.value.trim() || "N/A",
+                numero_serie: serie.value.trim() || "N/A",
+                mac: mac.value.trim() || "N/A",
+                id_zona: ID_ZONA
+            };
+
+            const json = await guardarSwitchEnBD(payload);
+
+            if (json.success) {
+                // guardar id_switch devuelto para próximos updates
+                if (json.id_switch) localStorage.setItem(DB_ID_KEY, String(json.id_switch));
+
+                // mantener también una copia local para que la UI sea inmediata
+                localStorage.setItem(switchSeleccionado, JSON.stringify({
+                    switchNombre: payload.nombre,
+                    switchUbicacion: payload.ubicacion,
+                    serie: payload.numero_serie,
+                    mac: payload.mac,
+                    puertos: {}
+                }));
+
+                actualizarVista(switchSeleccionado, cargarDatos(switchSeleccionado));
+
+                modalEditar.style.display = 'none';
+                modalFondo.style.display = 'flex';
+                alert("✅ Switch guardado correctamente.");
+                await cargarSwitchesDesdeBD(ID_ZONA); // refresca cache de BD
+            } else {
+                alert("Error: " + (json.message || "no se pudo guardar"));
+            }
         });
     })();
 });
