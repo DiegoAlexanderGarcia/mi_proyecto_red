@@ -62,48 +62,48 @@
                         <span class="info-value" id="ver-switch-mac"></span>
                     </div>
 
-                <div class="modal-footer">
-                    <button class="btn" id="cerrar-ver-btn">CERRAR</button>
-                    <button class="btn" id="btn-editar-info">EDITAR</button>
+                    <div class="modal-footer">
+                        <button class="btn" id="cerrar-ver-btn">CERRAR</button>
+                        <button class="btn btn-eliminar" id="eliminar-punto">ELIMINAR SWITCH</button>
+                        <button class="btn" id="btn-editar-info">EDITAR</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
 
-        <div id="modal-editar-punto" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 id="titulo-punto">EDITAR SWITCH DE RED</h2>
-                    <span class="close-btn" id="cerrar-punto">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <form id="form-switch">
-                        <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
-                        <label for="switch-nombre">NOMBRE </label>
-                        <input type="text" id="switch-nombre" placeholder="Ej: SW-PISO3-ARM-01">
+            <div id="modal-editar-punto" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="titulo-punto">EDITAR SWITCH DE RED</h2>
+                        <span class="close-btn" id="cerrar-punto">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-switch">
+                            <h3 style="margin-bottom: 5px; color: #007bff;">DATOS DEL SWITCH</h3>
+                            <label for="switch-nombre">NOMBRE </label>
+                            <input type="text" id="switch-nombre" placeholder="Ej: SW-PISO3-ARM-01">
 
-                        <label for="switch-ubicacion">UBICACIÓN</label>
-                        <input type="text" id="switch-ubicacion" placeholder="Ej: Piso 3, Armario 2">
+                            <label for="switch-ubicacion">UBICACIÓN</label>
+                            <input type="text" id="switch-ubicacion" placeholder="Ej: Piso 3, Armario 2">
 
-                        <label for="switch-serie">NÚMERO DE SERIE</label>
-                        <input type="text" id="switch-serie" placeholder="Ej: XYZ-123456789">
+                            <label for="switch-serie">NÚMERO DE SERIE</label>
+                            <input type="text" id="switch-serie" placeholder="Ej: XYZ-123456789">
 
-                        <label for="switch-mac">DIRECCIÓN MAC</label>
-                        <input type="text" id="switch-mac" placeholder="Ej: 00:1A:2B:3C:4D:5E">
+                            <label for="switch-mac">DIRECCIÓN MAC</label>
+                            <input type="text" id="switch-mac" placeholder="Ej: 00:1A:2B:3C:4D:5E">
 
-                        <hr style="margin: 15px 0;">
+                            <hr style="margin: 15px 0;">
 
-                        <div class="modal-footer">
-                    <button class="btn btn-eliminar" id="eliminar-punto">ELIMINAR SWITCH</button>
-                    <div>
-                        <button class="btn" id="cerrar-punto-btn">CERRAR</button>
-                        <button class="btn" id="guardar-punto">GUARDAR</button>
+                            <div class="modal-footer">
+                                <div>
+                                    <button class="btn" id="cerrar-punto-btn">CERRAR</button>
+                                    <button class="btn" id="guardar-punto">GUARDAR</button>
+                                </div>
+
+                            </div>
+                        </form>
                     </div>
 
-                        </div>
-                    </form>
-                </div>
-                
                 </div>
             </div>
         </div>

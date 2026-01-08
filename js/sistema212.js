@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalEditar.style.display = 'flex';
     });
 
-    formEditar.addEventListener('submit', (e) => {
+    formEditar.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentSwitchId) return;
 
@@ -245,6 +245,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         localStorage.setItem(currentSwitchId, JSON.stringify(dataToSave));
+
+        // ✅ Guardar también en Base de Datos
+        try {
+            await guardarSwitchEnBD({
+                codigo_switch: currentSwitchId,
+                nombre: dataToSave.switchNombre || 'Sin Asignar',
+                ubicacion: dataToSave.switchUbicacion || 'N/A',
+                numero_serie: dataToSave.serie || 'N/A',
+                mac: dataToSave.mac || 'N/A',
+                id_zona: (typeof ID_ZONA !== 'undefined') ? ID_ZONA : null
+            });
+        } catch (e) {
+            console.error('Error guardando switch en BD:', e);
+        }
+
         actualizarVista(dataToSave);
 
         modalEditar.style.display = 'none';

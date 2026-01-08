@@ -335,7 +335,7 @@ const nombrePuestoInput = document.getElementById("nombre-puesto");
 const estadoPuntoSelect = document.getElementById("estado-punto");
 const idPuntoInput = document.getElementById("id-punto");
 const patchPanelInput = document.getElementById("patch-panel");
-const switchInput = document.getElementById("switch");
+const switchSelect = document.getElementById("switch-select");
 const centroCableadoInput = document.getElementById("centro-cableado");
 const observacionesTextarea = document.getElementById("observaciones");
 
@@ -359,7 +359,7 @@ window.PUNTOS_DB = [];
 // =============================
 async function cargarDatosDesdeBD() {
     try {
-        const response = await fetch("../php/obtener_puntos.php");
+        const response = await fetch(`../php/obtener_puntos.php?id_zona=${ID_ZONA}`);
         const json = await response.json();
 
         if (json.success) {
@@ -374,6 +374,8 @@ async function cargarDatosDesdeBD() {
 cargarDatosDesdeBD();
 
 
+
+cargarSwitchesDesdeBD();
 // =============================
 // MULTISELECT
 // =============================
@@ -428,7 +430,7 @@ document.querySelectorAll(".punto").forEach(punto => {
             verEquiposConectados.textContent = dbItem.equipos_conectados || "N/A";
             verIdPunto.textContent = dbItem.id_punto_codigo || "N/A";
             verPatchPanel.textContent = dbItem.patch_panel || "N/A";
-            verSwitch.textContent = dbItem.switch_asociado || "N/A";
+            verSwitch.textContent = (dbItem?.id_switch && window.SWITCHES_MAP && window.SWITCHES_MAP[String(dbItem.id_switch)]) ? `${window.SWITCHES_MAP[String(dbItem.id_switch)].codigo_switch} - ${window.SWITCHES_MAP[String(dbItem.id_switch)].nombre}` : "N/A";
             verCentroCableado.textContent = dbItem.centro_cableado || "N/A";
             verObservaciones.textContent = dbItem.observaciones || "N/A";
         }
@@ -441,7 +443,7 @@ document.querySelectorAll(".punto").forEach(punto => {
 // =============================
 // EDITAR PUNTO
 // =============================
-btnEditarInfo.addEventListener("click", () => {
+btnEditarInfo.addEventListener("click", async () => {
 
     const dbItem = window.PUNTOS_DB.find(x => x.id_punto === Number(idPuntoRealInput.value));
 
@@ -450,8 +452,9 @@ btnEditarInfo.addEventListener("click", () => {
     estadoPuntoSelect.value = dbItem?.estado || "activo";
     idPuntoInput.value = dbItem?.id_punto_codigo || "";
     patchPanelInput.value = dbItem?.patch_panel || "";
-    switchInput.value = dbItem?.switch_asociado || "";
-    centroCableadoInput.value = dbItem?.centro_cableado || "";
+    await cargarSwitchesDesdeBD();
+    poblarSelectSwitch(dbItem?.id_switch || "");
+centroCableadoInput.value = dbItem?.centro_cableado || "";
     observacionesTextarea.value = dbItem?.observaciones || "";
 
     // Equipos
@@ -484,8 +487,7 @@ guardarPuntoBtn.addEventListener("click", async () => {
         puesto: nombrePuestoInput.value,
         estado: estadoPuntoSelect.value,
         equipos_conectados: equiposSeleccionados,
-        patch_panel: patchPanelInput.value,
-        switch_asociado: switchInput.value,
+        patch_panel: patchPanelInput.value,        id_switch: (switchSelect && switchSelect.value) ? Number(switchSelect.value) : null,
         centro_cableado: centroCableadoInput.value,
         observaciones: observacionesTextarea.value,
         id_zona: 18 // ZONA = SISTEMA

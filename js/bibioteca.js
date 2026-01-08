@@ -2,6 +2,8 @@
 // VARIABLES GENERALES
 // =============================
 
+
+const ID_ZONA = 13;
 const modalVerPunto = document.getElementById("modal-ver-punto");
 const modalEditarPunto = document.getElementById("modal-editar-punto");
 
@@ -31,7 +33,7 @@ const nombrePuestoInput = document.getElementById("nombre-puesto");
 const estadoPuntoSelect = document.getElementById("estado-punto");
 const idPuntoInput = document.getElementById("id-punto");
 const patchPanelInput = document.getElementById("patch-panel");
-const switchInput = document.getElementById("switch");
+const switchSelect = document.getElementById("switch-select");
 const centroCableadoInput = document.getElementById("centro-cableado");
 const observacionesTextarea = document.getElementById("observaciones");
 
@@ -86,7 +88,7 @@ function pintarMapaSegunDB() {
 // =============================
 async function cargarDatosDesdeBD() {
     try {
-        const response = await fetch("../php/obtener_puntos.php");
+        const response = await fetch(`../php/obtener_puntos.php?id_zona=${ID_ZONA}`);
         const json = await response.json();
 
         if (json.success) {
@@ -96,10 +98,49 @@ async function cargarDatosDesdeBD() {
         } else {
             console.error("Error al cargar puntos:", json.message);
         }
+
     } catch (error) {
-        console.error("Error al conectar con la BD:", error);
+        console.error("Error:", error);
     }
 }
+
+// =============================
+// SWITCHES (para conectar puntos a switch)
+// =============================
+async function cargarSwitchesDesdeBD() {
+    try {
+        const resp = await fetch(`../php/obtener_switch.php?id_zona=${ID_ZONA}`);
+        const json = await resp.json();
+        if (json.success) {
+            window.SWITCHES_DB = json.data || [];
+            window.SWITCHES_MAP = {};
+            window.SWITCHES_DB.forEach(sw => {
+                window.SWITCHES_MAP[String(sw.id_switch)] = sw;
+            });
+        } else {
+            console.error("Error al cargar switches:", json.message);
+            window.SWITCHES_DB = [];
+            window.SWITCHES_MAP = {};
+        }
+    } catch (e) {
+        console.error("Error cargando switches:", e);
+        window.SWITCHES_DB = [];
+        window.SWITCHES_MAP = {};
+    }
+}
+
+function poblarSelectSwitch(selectedId = "") {
+    if (!switchSelect) return;
+    switchSelect.innerHTML = `<option value="">Sin switch</option>`;
+    (window.SWITCHES_DB || []).forEach(sw => {
+        const opt = document.createElement("option");
+        opt.value = sw.id_switch;
+        opt.textContent = `${sw.codigo_switch} - ${sw.nombre}`;
+        switchSelect.appendChild(opt);
+    });
+    if (selectedId) switchSelect.value = String(selectedId);
+}
+
 
 
 // =============================
@@ -157,7 +198,7 @@ document.querySelectorAll(".punto").forEach(punto => {
             verEquiposConectados.textContent = dbItem.equipos_conectados || "N/A";
             verIdPunto.textContent = dbItem.id_punto_codigo || "N/A";
             verPatchPanel.textContent = dbItem.patch_panel || "N/A";
-            verSwitch.textContent = dbItem.switch_asociado || "N/A";
+            verSwitch.textContent = (dbItem?.id_switch && window.SWITCHES_MAP && window.SWITCHES_MAP[String(dbItem.id_switch)]) ? `${window.SWITCHES_MAP[String(dbItem.id_switch)].codigo_switch} - ${window.SWITCHES_MAP[String(dbItem.id_switch)].nombre}` : "N/A";
             verCentroCableado.textContent = dbItem.centro_cableado || "N/A";
             verObservaciones.textContent = dbItem.observaciones || "N/A";
         }
@@ -170,7 +211,7 @@ document.querySelectorAll(".punto").forEach(punto => {
 // =============================
 // EDITAR PUNTO (Lógica de Inicialización de Formulario)
 // =============================
-btnEditarInfo.addEventListener("click", () => {
+btnEditarInfo.addEventListener("click", async () => {
     if (!puntoActual) return;
     
     // Buscar el punto en la BD usando el ID REAL que se cargó en el modal VER
@@ -183,8 +224,9 @@ btnEditarInfo.addEventListener("click", () => {
     estadoPuntoSelect.value = dbItem?.estado || "activo"; // Valor por defecto si no existe
     idPuntoInput.value = dbItem?.id_punto_codigo || puntoActual.id; // Usar el ID del elemento del mapa si no está en la BD
     patchPanelInput.value = dbItem?.patch_panel || "";
-    switchInput.value = dbItem?.switch_asociado || "";
-    centroCableadoInput.value = dbItem?.centro_cableado || "";
+    await cargarSwitchesDesdeBD();
+    poblarSelectSwitch(dbItem?.id_switch || "");
+centroCableadoInput.value = dbItem?.centro_cableado || "";
     observacionesTextarea.value = dbItem?.observaciones || "";
 
     // Equipos
@@ -249,7 +291,9 @@ guardarPuntoBtn.addEventListener("click", async () => {
             // 2. Actualizar el mapa
             await cargarDatosDesdeBD(); 
             
-        } else {
+        
+cargarSwitchesDesdeBD();
+} else {
             alert("Error: " + json.message);
         }
     } catch (error) {
